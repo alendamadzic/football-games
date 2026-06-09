@@ -19,6 +19,7 @@ export type SdbPlayer = {
   strPlayer: string;
   strTeam: string | null;
   strSport: string | null;
+  strGender: string | null;
   strPosition: string | null;
   strNationality: string | null;
   strThumb: string | null;

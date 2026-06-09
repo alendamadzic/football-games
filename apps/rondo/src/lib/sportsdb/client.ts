@@ -23,14 +23,20 @@ const NON_SENIOR_PATTERN =
 // Leagues TheSportsDB uses for national/international squads.
 const INTERNATIONAL_LEAGUE_PATTERN = /international/i;
 
-/** Returns true for youth, reserve, B-team, or national/international sides. */
+// Matches women's/girls' team name indicators across multiple languages.
+const WOMENS_PATTERN =
+  /\b(women|womens|ladies|girls|female|femenin[ao]|feminin[ae]|feminino|dames|frauen|femmes|mujer|naiset)\b/i;
+
+/** Returns true for youth, reserve, B-team, national/international, or women's sides. */
 function isNonSeniorClub(
   name: string,
   league: string | null,
   country: string | null,
 ): boolean {
   if (NON_SENIOR_PATTERN.test(name)) return true;
+  if (WOMENS_PATTERN.test(name)) return true;
   if (league && INTERNATIONAL_LEAGUE_PATTERN.test(league)) return true;
+  if (league && WOMENS_PATTERN.test(league)) return true;
   // National teams: team name matches or is contained in the country name.
   if (country) {
     const normName = name.trim().toLowerCase();
@@ -89,7 +95,11 @@ export async function searchPlayers(query: string): Promise<PlayerResult[]> {
     `searchplayers.php?p=${encodeURIComponent(query)}`,
   );
   return (data.player ?? [])
-    .filter((p) => p.strSport === SOCCER)
+    .filter(
+      (p) =>
+        p.strSport === SOCCER &&
+        p.strGender !== "Female",
+    )
     .map((p) => ({
       id: p.idPlayer,
       name: p.strPlayer,
