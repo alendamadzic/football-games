@@ -6,15 +6,11 @@ import { useEffect, useRef } from "react";
 import type { ChainLink } from "@/lib/game/types";
 import { cn } from "@/lib/utils";
 
-function cleanTeamName(name: string | null): string | null {
-  if (!name || name.startsWith("_")) return null;
-  return name;
-}
 
 function ChainCard({ link, latest }: { link: ChainLink; latest: boolean }) {
   const isClub = link.kind === "club";
   const image = isClub ? link.badge : link.image;
-  const subtitle = isClub ? "Club" : (cleanTeamName(link.teamName) ?? "Player");
+  const subtitle = isClub ? "Club" : "Player";
 
   return (
     <div
