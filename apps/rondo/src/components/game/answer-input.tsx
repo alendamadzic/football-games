@@ -203,12 +203,7 @@ function SuggestionRow({
     ? (item as PlayerResult).image
     : (item as ClubResult).badge;
   const subtitle = isPlayer
-    ? [
-        (item as PlayerResult).position,
-        cleanName((item as PlayerResult).teamName),
-      ]
-        .filter(Boolean)
-        .join(" · ")
+    ? (item as PlayerResult).position ?? null
     : [(item as ClubResult).league, (item as ClubResult).country]
         .filter(Boolean)
         .join(" · ");
