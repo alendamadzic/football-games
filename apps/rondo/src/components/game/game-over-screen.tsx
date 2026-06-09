@@ -1,0 +1,82 @@
+"use client";
+
+import { Home, RotateCcw, Trophy } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ChainTimeline } from "./chain-timeline";
+import { useGame } from "./game-provider";
+
+export function GameOverScreen() {
+  const { state, resetToSetup } = useGame();
+  const isArcade = state.mode === "arcade";
+  const winner = state.players.find((p) => p.id === state.winnerId);
+  const links = state.chain.length - 1;
+
+  // Headline reflects how the arcade run actually ended.
+  const arcadeReason = state.lastElimination?.reason;
+  const arcadeHeadline =
+    arcadeReason === "timeout"
+      ? "Time's up — final score"
+      : arcadeReason === "gaveup"
+        ? "Run ended — final score"
+        : "Wrong link — final score";
+
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4 py-10 text-center">
+      <div className="flex flex-col items-center gap-3">
+        <span className="flex size-16 items-center justify-center rounded-full bg-primary/15 text-primary">
+          <Trophy className="size-8" aria-hidden />
+        </span>
+        {isArcade ? (
+          <>
+            <p className="font-heading text-sm tracking-widest text-muted-foreground uppercase">
+              {arcadeHeadline}
+            </p>
+            <p className="font-heading text-7xl leading-none text-primary tabular sm:text-8xl">
+              {state.score}
+            </p>
+            <p className="text-muted-foreground">
+              {state.score === 1 ? "1 link" : `${state.score} links`} built in
+              the chain.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="font-heading text-sm tracking-widest text-muted-foreground uppercase">
+              Winner
+            </p>
+            <h2 className="font-heading text-5xl leading-none uppercase sm:text-6xl">
+              {winner?.name ?? "Nobody"}
+            </h2>
+            <p className="text-muted-foreground">
+              Last one standing after a {links}-link chain.
+            </p>
+          </>
+        )}
+      </div>
+
+      <div className="w-full">
+        <p className="mb-3 font-heading text-xs tracking-widest text-muted-foreground uppercase">
+          The chain
+        </p>
+        <ChainTimeline chain={state.chain} />
+      </div>
+
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <Button size="lg" onClick={resetToSetup}>
+          <RotateCcw aria-hidden />
+          Play again
+        </Button>
+        <Button
+          size="lg"
+          variant="outline"
+          nativeButton={false}
+          render={<Link href="/" />}
+        >
+          <Home aria-hidden />
+          Home
+        </Button>
+      </div>
+    </div>
+  );
+}
