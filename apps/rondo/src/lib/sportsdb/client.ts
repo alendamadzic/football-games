@@ -16,6 +16,35 @@ const SOCCER = "Soccer";
 
 export { normalizeClubName };
 
+// Matches youth, reserve, B-team, and other non-senior suffixes/patterns.
+const NON_SENIOR_PATTERN =
+  /\b(u\d{2}|under[-\s]?\d{2}|reserve|reserves|youth|academy|development|b\s*team|castilla|filial)\b|\s[bbc]\s*$|\s(ii|iii|iv|v)\s*$/i;
+
+// Leagues TheSportsDB uses for national/international squads.
+const INTERNATIONAL_LEAGUE_PATTERN = /international/i;
+
+/** Returns true for youth, reserve, B-team, or national/international sides. */
+function isNonSeniorClub(
+  name: string,
+  league: string | null,
+  country: string | null,
+): boolean {
+  if (NON_SENIOR_PATTERN.test(name)) return true;
+  if (league && INTERNATIONAL_LEAGUE_PATTERN.test(league)) return true;
+  // National teams: team name matches or is contained in the country name.
+  if (country) {
+    const normName = name.trim().toLowerCase();
+    const normCountry = country.trim().toLowerCase();
+    if (normName === normCountry || normCountry === normName) return true;
+  }
+  return false;
+}
+
+/** Name-only variant used where league/country data is unavailable. */
+function isNonSeniorClubByName(name: string): boolean {
+  return isNonSeniorClub(name, null, null);
+}
+
 async function sdbFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}/${path}`, {
     headers: { Accept: "application/json" },
@@ -36,7 +65,11 @@ export async function searchTeams(query: string): Promise<ClubResult[]> {
     `searchteams.php?t=${encodeURIComponent(query)}`,
   );
   return (data.teams ?? [])
-    .filter((t) => t.strSport === SOCCER)
+    .filter(
+      (t) =>
+        t.strSport === SOCCER &&
+        !isNonSeniorClub(t.strTeam, t.strLeague, t.strCountry),
+    )
     .map((t) => ({
       id: t.idTeam,
       name: t.strTeam,
@@ -90,6 +123,7 @@ export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
     );
     for (const t of former.formerteams ?? []) {
       if (t.strSport && t.strSport !== SOCCER) continue;
+      if (isNonSeniorClubByName(t.strFormerTeam)) continue;
       clubs.set(t.idFormerTeam, {
         id: t.idFormerTeam,
         name: t.strFormerTeam,
@@ -106,7 +140,12 @@ export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
     );
     const player = lookup.players?.[0];
     // Skip placeholder teams like "_Free Agent" / "_Retired".
-    if (player?.idTeam && player.strTeam && !player.strTeam.startsWith("_")) {
+    if (
+      player?.idTeam &&
+      player.strTeam &&
+      !player.strTeam.startsWith("_") &&
+      !isNonSeniorClubByName(player.strTeam)
+    ) {
       clubs.set(player.idTeam, { id: player.idTeam, name: player.strTeam });
     }
   } catch {
