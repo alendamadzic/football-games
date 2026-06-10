@@ -239,7 +239,7 @@ function SuggestionRow({
 }
 
 function cnBox(isPlayer: boolean): string {
-  return `flex size-9 shrink-0 items-center justify-center overflow-hidden bg-muted ${
-    isPlayer ? "rounded-full" : "rounded-md"
+  return `flex size-9 shrink-0 items-center justify-center overflow-hidden ${
+    isPlayer ? "rounded-full bg-muted" : "rounded-md"
   }`;
 }

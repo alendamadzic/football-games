@@ -19,7 +19,7 @@ function ClubCard({ link, latest }: { link: Extract<ChainLink, { kind: "club" }>
       <span className="absolute top-2 left-2 font-heading text-[0.6rem] tracking-widest text-muted-foreground uppercase">
         Club
       </span>
-      <div className="mt-3 flex size-16 items-center justify-center overflow-hidden rounded-md bg-muted sm:size-20">
+      <div className="mt-3 flex size-16 items-center justify-center overflow-hidden rounded-md sm:size-20">
         {link.badge ? (
           <Image
             src={link.badge}
