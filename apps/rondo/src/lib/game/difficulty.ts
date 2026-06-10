@@ -16,19 +16,21 @@ export function getDynamicSeconds(chainLength: number): number {
 export type NationEntry = {
   nationality: string;
   flag: string;
+  /** Country name aliases as returned by the Transfermarkt API. */
+  aliases?: string[];
 };
 
 export const MAJOR_NATIONS: NationEntry[] = [
-  { nationality: "Argentine", flag: "🇦🇷" },
-  { nationality: "Belgian", flag: "🇧🇪" },
-  { nationality: "Brazilian", flag: "🇧🇷" },
-  { nationality: "Dutch", flag: "🇳🇱" },
-  { nationality: "English", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-  { nationality: "French", flag: "🇫🇷" },
-  { nationality: "German", flag: "🇩🇪" },
-  { nationality: "Italian", flag: "🇮🇹" },
-  { nationality: "Portuguese", flag: "🇵🇹" },
-  { nationality: "Spanish", flag: "🇪🇸" },
+  { nationality: "Argentine", flag: "🇦🇷", aliases: ["Argentina"] },
+  { nationality: "Belgian", flag: "🇧🇪", aliases: ["Belgium"] },
+  { nationality: "Brazilian", flag: "🇧🇷", aliases: ["Brazil"] },
+  { nationality: "Dutch", flag: "🇳🇱", aliases: ["Netherlands"] },
+  { nationality: "English", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", aliases: ["England"] },
+  { nationality: "French", flag: "🇫🇷", aliases: ["France"] },
+  { nationality: "German", flag: "🇩🇪", aliases: ["Germany"] },
+  { nationality: "Italian", flag: "🇮🇹", aliases: ["Italy"] },
+  { nationality: "Portuguese", flag: "🇵🇹", aliases: ["Portugal"] },
+  { nationality: "Spanish", flag: "🇪🇸", aliases: ["Spain"] },
 ];
 
 /** Returns just the nationality strings for backward-compat use in config. */
@@ -36,6 +38,20 @@ export const MAJOR_NATION_NAMES = MAJOR_NATIONS.map((n) => n.nationality);
 
 export function getNationEntry(nationality: string): NationEntry | undefined {
   return MAJOR_NATIONS.find((n) => n.nationality === nationality);
+}
+
+/**
+ * Resolves a raw nationality string (e.g. "Netherlands" from TM search results)
+ * to the canonical restriction value (e.g. "Dutch"). Returns null if unrecognised.
+ */
+export function resolveNationality(raw: string | null): string | null {
+  if (!raw) return null;
+  const entry = MAJOR_NATIONS.find(
+    (n) =>
+      n.nationality === raw ||
+      n.aliases?.some((a) => a.toLowerCase() === raw.toLowerCase()),
+  );
+  return entry?.nationality ?? null;
 }
 
 export type PositionEntry = {

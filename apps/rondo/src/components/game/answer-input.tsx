@@ -12,7 +12,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useDebouncedValue } from "@/hooks/use-debounce";
-import { normalizePosition } from "@/lib/game/difficulty";
+import { normalizePosition, resolveNationality } from "@/lib/game/difficulty";
 import { referenceClub, referencePlayer } from "@/lib/game/reducer";
 import type { ChainLink } from "@/lib/game/types";
 import { searchClubsAction, searchPlayersAction } from "@/lib/sportsdb/actions";
@@ -87,21 +87,6 @@ export function AnswerInput() {
       }
     }
 
-    // Enforce active player restrictions before hitting the API.
-    if (lookingForPlayer) {
-      const player = item as PlayerResult;
-      const { nationality, position } = state.config.restrictions;
-
-      if (nationality && player.nationality && player.nationality !== nationality) {
-        dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
-        return;
-      }
-      if (position && player.position && normalizePosition(player.position) !== position) {
-        dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
-        return;
-      }
-    }
-
     const playerId = lookingForPlayer ? item.id : refPlayer?.id;
     const club = lookingForPlayer ? refClub : { id: item.id, name: item.name };
     if (!playerId || !club) return;
@@ -111,6 +96,23 @@ export function AnswerInput() {
     setChecking(false);
 
     if (result.status === "valid") {
+      // Enforce restrictions after the link is confirmed — search result metadata
+      // (nationality, position) uses different formats than the restriction values
+      // and can be null, so checking it upfront causes false rejections.
+      if (lookingForPlayer) {
+        const player = item as PlayerResult;
+        const { nationality, position } = state.config.restrictions;
+
+        if (nationality && player.nationality && resolveNationality(player.nationality) !== nationality) {
+          dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
+          return;
+        }
+        if (position && player.position && normalizePosition(player.position) !== position) {
+          dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
+          return;
+        }
+      }
+
       const link: ChainLink = lookingForPlayer
         ? {
             kind: "player",
