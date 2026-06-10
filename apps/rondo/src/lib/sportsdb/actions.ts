@@ -2,6 +2,7 @@
 
 import { shuffledStartingClubNames } from "@/lib/game/starting-clubs";
 import {
+  getJerseyNumber,
   getPlayerClubs,
   normalizeClubName,
   searchPlayers,
@@ -87,4 +88,19 @@ export async function verifyLinkAction(
   );
 
   return matched ? { status: "valid" } : { status: "contradicted", knownClubs };
+}
+
+/**
+ * Returns the jersey number a player wore at a specific club, or null if
+ * unavailable. Non-blocking — callers should treat null as "not found".
+ */
+export async function getJerseyNumberAction(
+  playerId: string,
+  clubId: string,
+): Promise<number | null> {
+  try {
+    return await getJerseyNumber(playerId, clubId);
+  } catch {
+    return null;
+  }
 }

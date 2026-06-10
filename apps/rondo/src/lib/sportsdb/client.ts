@@ -4,59 +4,41 @@ import type {
   CareerClub,
   ClubResult,
   PlayerResult,
-  SdbFormerTeamsResponse,
-  SdbLookupPlayerResponse,
-  SdbSearchPlayersResponse,
-  SdbSearchTeamsResponse,
+  TmClubSearchResponse,
+  TmJerseyNumbersResponse,
+  TmPlayerProfile,
+  TmPlayerSearchResponse,
+  TmTransfersResponse,
 } from "./types";
 
-// The free, public, key-less tier. `123` is the documented public key.
-const BASE = "https://www.thesportsdb.com/api/v1/json/123";
-const SOCCER = "Soccer";
+const BASE = "https://transfermarkt-api-xi.vercel.app";
 
 export { normalizeClubName };
+
+/** Constructs a Transfermarkt CDN badge URL for a club. */
+function clubBadgeUrl(clubId: string): string {
+  return `https://tmssl.akamaized.net/images/wappen/normquad/${clubId}.png`;
+}
 
 // Matches youth, reserve, B-team, and other non-senior suffixes/patterns.
 const NON_SENIOR_PATTERN =
   /\b(u\d{2}|under[-\s]?\d{2}|reserve|reserves|youth|academy|development|b\s*team|castilla|filial)\b|\s[bbc]\s*$|\s(ii|iii|iv|v)\s*$/i;
 
-// Leagues TheSportsDB uses for national/international squads.
-const INTERNATIONAL_LEAGUE_PATTERN = /international/i;
-
 // Matches women's/girls' team name indicators across multiple languages.
 const WOMENS_PATTERN =
   /\b(women|womens|ladies|girls|female|femenin[ao]|feminin[ae]|feminino|dames|frauen|femmes|mujer|naiset)\b/i;
 
-/** Returns true for youth, reserve, B-team, national/international, or women's sides. */
-function isNonSeniorClub(
-  name: string,
-  league: string | null,
-  country: string | null,
-): boolean {
-  if (NON_SENIOR_PATTERN.test(name)) return true;
-  if (WOMENS_PATTERN.test(name)) return true;
-  if (league && INTERNATIONAL_LEAGUE_PATTERN.test(league)) return true;
-  if (league && WOMENS_PATTERN.test(league)) return true;
-  // National teams: team name matches or is contained in the country name.
-  if (country) {
-    const normName = name.trim().toLowerCase();
-    const normCountry = country.trim().toLowerCase();
-    if (normName === normCountry || normCountry === normName) return true;
-  }
-  return false;
+function isNonSeniorClub(name: string): boolean {
+  return NON_SENIOR_PATTERN.test(name) || WOMENS_PATTERN.test(name);
 }
 
-/** Name-only variant used where league/country data is unavailable. */
-function isNonSeniorClubByName(name: string): boolean {
-  return isNonSeniorClub(name, null, null);
-}
-
-async function sdbFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}/${path}`, {
+async function tmFetch<T>(path: string): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
     headers: { Accept: "application/json" },
+    signal: AbortSignal.timeout(8000),
   });
   if (!res.ok) {
-    throw new Error(`TheSportsDB request failed: ${res.status}`);
+    throw new Error(`Transfermarkt API request failed: ${res.status}`);
   }
   return (await res.json()) as T;
 }
@@ -65,23 +47,19 @@ async function sdbFetch<T>(path: string): Promise<T> {
 export async function searchTeams(query: string): Promise<ClubResult[]> {
   "use cache";
   cacheLife("days");
-  cacheTag("sdb-teams", `sdb-teams-${query.toLowerCase()}`);
+  cacheTag("tm-teams", `tm-teams-${query.toLowerCase()}`);
 
-  const data = await sdbFetch<SdbSearchTeamsResponse>(
-    `searchteams.php?t=${encodeURIComponent(query)}`,
+  const data = await tmFetch<TmClubSearchResponse>(
+    `/clubs/search/${encodeURIComponent(query)}`,
   );
-  return (data.teams ?? [])
-    .filter(
-      (t) =>
-        t.strSport === SOCCER &&
-        !isNonSeniorClub(t.strTeam, t.strLeague, t.strCountry),
-    )
+  return (data.results ?? [])
+    .filter((t) => !isNonSeniorClub(t.name))
     .map((t) => ({
-      id: t.idTeam,
-      name: t.strTeam,
-      badge: t.strBadge,
-      league: t.strLeague,
-      country: t.strCountry,
+      id: t.id,
+      name: t.name,
+      badge: clubBadgeUrl(t.id),
+      league: null,
+      country: t.country ?? null,
     }));
 }
 
@@ -89,78 +67,81 @@ export async function searchTeams(query: string): Promise<ClubResult[]> {
 export async function searchPlayers(query: string): Promise<PlayerResult[]> {
   "use cache";
   cacheLife("days");
-  cacheTag("sdb-players", `sdb-players-${query.toLowerCase()}`);
+  cacheTag("tm-players", `tm-players-${query.toLowerCase()}`);
 
-  const data = await sdbFetch<SdbSearchPlayersResponse>(
-    `searchplayers.php?p=${encodeURIComponent(query)}`,
+  const data = await tmFetch<TmPlayerSearchResponse>(
+    `/players/search/${encodeURIComponent(query)}`,
   );
-  return (data.player ?? [])
-    .filter(
-      (p) =>
-        p.strSport === SOCCER &&
-        p.strGender !== "Female",
-    )
-    .map((p) => ({
-      id: p.idPlayer,
-      name: p.strPlayer,
-      teamId: p.idTeam,
-      teamName: p.strTeam,
-      position: p.strPosition,
-      nationality: p.strNationality,
-      image: p.strCutout ?? p.strThumb,
-    }));
+  return (data.results ?? []).map((p) => ({
+    id: p.id,
+    name: p.name,
+    teamId: p.club?.id ?? null,
+    teamName: p.club?.name ?? null,
+    position: p.position ?? null,
+    nationality: p.nationalities?.[0] ?? null,
+  }));
 }
 
 /**
- * The full set of clubs a player has been part of — current team plus every
- * former team (loans included by the API). This is the backbone of link
- * verification, so it is cached aggressively (career history is near-static).
- *
- * Returns an empty array when the API has no career data for the player, which
- * the action layer treats as "unconfirmed" rather than "wrong".
+ * The full set of clubs a player has been part of, derived from their
+ * complete transfer history plus current club. Cached aggressively as career
+ * history is near-static.
  */
 export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
   "use cache";
   cacheLife("weeks");
-  cacheTag("sdb-career", `sdb-career-${playerId}`);
+  cacheTag("tm-career", `tm-career-${playerId}`);
 
   const clubs = new Map<string, CareerClub>();
 
-  // Former teams — the authoritative career-history endpoint.
+  const addClub = (id: string | undefined | null, name: string | undefined | null) => {
+    if (!id || !name || isNonSeniorClub(name)) return;
+    clubs.set(id, { id, name });
+  };
+
+  // Full transfer history — both legs of each transfer.
   try {
-    const former = await sdbFetch<SdbFormerTeamsResponse>(
-      `lookupformerteams.php?id=${encodeURIComponent(playerId)}`,
+    const transfers = await tmFetch<TmTransfersResponse>(
+      `/players/${encodeURIComponent(playerId)}/transfers`,
     );
-    for (const t of former.formerteams ?? []) {
-      if (t.strSport && t.strSport !== SOCCER) continue;
-      if (isNonSeniorClubByName(t.strFormerTeam)) continue;
-      clubs.set(t.idFormerTeam, {
-        id: t.idFormerTeam,
-        name: t.strFormerTeam,
-      });
+    for (const t of transfers.transfers ?? []) {
+      addClub(t.clubFrom?.id, t.clubFrom?.name);
+      addClub(t.clubTo?.id, t.clubTo?.name);
     }
   } catch {
-    // Ignore — fall back to whatever the current-team lookup provides.
+    // Fall through to profile lookup.
   }
 
-  // Current team — not always present in former-teams (e.g. active players).
+  // Current club — catches one-club players with no transfer history.
   try {
-    const lookup = await sdbFetch<SdbLookupPlayerResponse>(
-      `lookupplayer.php?id=${encodeURIComponent(playerId)}`,
+    const profile = await tmFetch<TmPlayerProfile>(
+      `/players/${encodeURIComponent(playerId)}/profile`,
     );
-    const player = lookup.players?.[0];
-    // Skip placeholder teams like "_Free Agent" / "_Retired".
-    if (
-      player?.idTeam &&
-      player.strTeam &&
-      !player.strTeam.startsWith("_") &&
-      !isNonSeniorClubByName(player.strTeam)
-    ) {
-      clubs.set(player.idTeam, { id: player.idTeam, name: player.strTeam });
-    }
+    addClub(profile.club?.id, profile.club?.name);
   } catch {
-    // Ignore — former teams alone is usually enough.
+    // Ignore.
   }
 
   return [...clubs.values()];
+}
+
+/**
+ * Returns the jersey number a player wore at a specific club, or null if
+ * unavailable. Used as a non-blocking UI enhancement on player chain cards.
+ */
+export async function getJerseyNumber(
+  playerId: string,
+  clubId: string,
+): Promise<number | null> {
+  "use cache";
+  cacheLife("weeks");
+  cacheTag("tm-jersey", `tm-jersey-${playerId}`);
+
+  const data = await tmFetch<TmJerseyNumbersResponse>(
+    `/players/${encodeURIComponent(playerId)}/jersey_numbers`,
+  );
+
+  // Jersey numbers are returned most-recent-first; take the first match.
+  const entry = (data.jerseyNumbers ?? []).find((j) => j.club === clubId);
+  return entry?.jerseyNumber ?? null;
 }

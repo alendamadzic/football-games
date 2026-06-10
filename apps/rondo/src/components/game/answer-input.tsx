@@ -100,7 +100,7 @@ export function AnswerInput() {
             kind: "player",
             id: item.id,
             name: item.name,
-            image: (item as PlayerResult).image,
+            linkedClubId: refClub?.id ?? null,
             teamName: (item as PlayerResult).teamName,
           }
         : {
@@ -199,29 +199,25 @@ function SuggestionRow({
   isPlayer: boolean;
   onPick: () => void;
 }) {
-  const image = isPlayer
-    ? (item as PlayerResult).image
-    : (item as ClubResult).badge;
+  const badge = !isPlayer ? (item as ClubResult).badge : null;
   const subtitle = isPlayer
-    ? (item as PlayerResult).position ?? null
-    : [(item as ClubResult).league, (item as ClubResult).country]
+    ? [(item as PlayerResult).position, (item as PlayerResult).nationality]
+        .filter(Boolean)
+        .join(" · ")
+    : [(item as ClubResult).country]
         .filter(Boolean)
         .join(" · ");
 
   return (
     <CommandItem value={item.id} onSelect={onPick} className="gap-3 py-2.5">
       <div className={cnBox(isPlayer)} aria-hidden>
-        {image ? (
+        {badge ? (
           <Image
-            src={image}
+            src={badge}
             alt=""
             width={36}
             height={36}
-            className={
-              isPlayer
-                ? "size-full object-cover"
-                : "size-full object-contain p-0.5"
-            }
+            className="size-full object-contain p-0.5"
             unoptimized
           />
         ) : isPlayer ? (
@@ -240,11 +236,6 @@ function SuggestionRow({
       </div>
     </CommandItem>
   );
-}
-
-function cleanName(name: string | null): string | null {
-  if (!name || name.startsWith("_")) return null;
-  return name;
 }
 
 function cnBox(isPlayer: boolean): string {

@@ -16,7 +16,8 @@ export type ChainLink =
       kind: "player";
       id: string;
       name: string;
-      image: string | null;
+      /** Club ID the player was linked through — used to look up jersey number. */
+      linkedClubId: string | null;
       teamName: string | null;
     };
 
