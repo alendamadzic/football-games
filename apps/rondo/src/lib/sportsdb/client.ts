@@ -4,7 +4,6 @@ import type {
   CareerClub,
   ClubResult,
   PlayerResult,
-  TmClubPlayersResponse,
   TmClubSearchResponse,
   TmJerseyNumbersResponse,
   TmPlayerProfile,
@@ -127,26 +126,6 @@ export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
   }
 
   return [...clubs.values()];
-}
-
-/**
- * Current squad for a club, used to verify at least one player satisfies active
- * restrictions before accepting the club as a starting seed. Cached for a day.
- */
-export async function getClubSquad(
-  clubId: string,
-): Promise<{ nationality: string | null; position: string | null }[]> {
-  "use cache";
-  cacheLife("days");
-  cacheTag("tm-squad", `tm-squad-${clubId}`);
-
-  const data = await tmFetch<TmClubPlayersResponse>(
-    `/clubs/${encodeURIComponent(clubId)}/players`,
-  );
-  return (data.players ?? []).map((p) => ({
-    nationality: p.nationalities?.[0] ?? null,
-    position: p.position ?? null,
-  }));
 }
 
 /**
