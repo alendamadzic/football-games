@@ -3,6 +3,8 @@
 import { Home, RotateCcw, Trophy } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getNationEntry, getPositionEntry } from "@/lib/game/difficulty";
+import type { GameConfig } from "@/lib/game/types";
 import { ChainTimeline } from "./chain-timeline";
 import { useGame } from "./game-provider";
 
@@ -55,6 +57,8 @@ export function GameOverScreen() {
         )}
       </div>
 
+      <GameSettings config={state.config} />
+
       <div className="w-full">
         <p className="mb-3 font-heading text-xs tracking-widest text-muted-foreground uppercase">
           The chain
@@ -77,6 +81,71 @@ export function GameOverScreen() {
           Home
         </Button>
       </div>
+    </div>
+  );
+}
+
+function timerLabel(turnSeconds: GameConfig["turnSeconds"]): string {
+  if (turnSeconds === "dynamic") return "Dynamic";
+  if (turnSeconds === null) return "Off";
+  if (turnSeconds < 60) return `${turnSeconds}s`;
+  return `${turnSeconds / 60}m`;
+}
+
+function GameSettings({ config }: { config: GameConfig }) {
+  const { turnSeconds, restrictions } = config;
+  const nation = restrictions.nationality
+    ? getNationEntry(restrictions.nationality)
+    : null;
+  const pos = restrictions.position
+    ? getPositionEntry(restrictions.position)
+    : null;
+  const hasRestrictions = nation || pos;
+
+  return (
+    <div className="flex flex-wrap justify-center gap-3">
+      <div className="flex flex-col items-center gap-1 rounded-xl border bg-card px-5 py-3 shadow-sm">
+        <span className="font-heading text-2xl font-bold leading-none text-primary">
+          {timerLabel(turnSeconds)}
+        </span>
+        <span className="font-heading text-xs tracking-widest uppercase text-muted-foreground">
+          {config.mode === "arcade" ? "Session timer" : "Turn timer"}
+        </span>
+      </div>
+      {nation && (
+        <div className="flex flex-col items-center gap-1 rounded-xl border bg-card px-5 py-3 shadow-sm">
+          <span
+            className="text-2xl leading-none"
+            role="img"
+            aria-label={nation.nationality}
+          >
+            {nation.flag}
+          </span>
+          <span className="font-heading text-xs tracking-widest uppercase text-muted-foreground">
+            {nation.nationality} only
+          </span>
+        </div>
+      )}
+      {pos && (
+        <div className="flex flex-col items-center gap-1 rounded-xl border bg-card px-5 py-3 shadow-sm">
+          <span className="font-heading text-2xl font-bold leading-none text-primary">
+            {pos.abbr}
+          </span>
+          <span className="font-heading text-xs tracking-widest uppercase text-muted-foreground">
+            {pos.position}s only
+          </span>
+        </div>
+      )}
+      {!hasRestrictions && (
+        <div className="flex flex-col items-center gap-1 rounded-xl border bg-card px-5 py-3 shadow-sm">
+          <span className="font-heading text-2xl font-bold leading-none text-primary">
+            —
+          </span>
+          <span className="font-heading text-xs tracking-widest uppercase text-muted-foreground">
+            No restrictions
+          </span>
+        </div>
+      )}
     </div>
   );
 }
