@@ -5,10 +5,16 @@ import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import {
+  getDynamicSeconds,
+  getNationEntry,
+  getPositionEntry,
+} from "@/lib/game/difficulty";
+import {
   activePlayer,
   referenceClub,
   referencePlayer,
 } from "@/lib/game/reducer";
+import type { RestrictedPosition } from "@/lib/game/types";
 import { AnswerInput } from "./answer-input";
 import { ChainTimeline } from "./chain-timeline";
 import { EliminationDialog } from "./elimination-dialog";
@@ -30,13 +36,22 @@ export function GameScreen() {
 
   // Local: a fresh per-turn clock. Arcade: one clock for the whole session,
   // keyed to the seed so it restarts only on a new game.
+  // Dynamic timer always uses a per-turn key regardless of mode.
   const seed = state.chain[0];
-  const resetKey = isArcade
-    ? `arcade-${seed?.id ?? "idle"}`
-    : `${state.chain.length}-${state.activePlayerIndex}`;
+  const isDynamic = state.config.turnSeconds === "dynamic";
+  const resetKey =
+    isDynamic || !isArcade
+      ? `${state.chain.length}-${state.activePlayerIndex}`
+      : `arcade-${seed?.id ?? "idle"}`;
+
+  const effectiveSeconds: number | null = isDynamic
+    ? getDynamicSeconds(state.chain.length)
+    : typeof state.config.turnSeconds === "number"
+      ? state.config.turnSeconds
+      : null;
 
   const remaining = useCountdown({
-    seconds: state.config.turnSeconds,
+    seconds: effectiveSeconds,
     running: state.phase === "playing",
     resetKey,
     onExpire: handleTimeout,
@@ -66,11 +81,11 @@ export function GameScreen() {
             showLives={state.config.lives > 1}
           />
         )}
-        {state.config.turnSeconds != null && remaining != null && (
+        {effectiveSeconds != null && remaining != null && (
           <TimerBar
             remaining={remaining}
-            total={state.config.turnSeconds}
-            label={isArcade ? "Session" : "Turn"}
+            total={effectiveSeconds}
+            label={isDynamic ? "Dynamic Turn" : isArcade ? "Session" : "Turn"}
           />
         )}
       </div>
@@ -84,6 +99,11 @@ export function GameScreen() {
           turnKind={state.turnKind}
           referenceName={referenceName}
           activePlayerName={isArcade ? undefined : active?.name}
+        />
+        <RestrictionBadges
+          nationality={state.config.restrictions.nationality}
+          position={state.config.restrictions.position}
+          turnKind={state.turnKind}
         />
         <AnswerInput key={`${state.chain.length}-${state.activePlayerIndex}`} />
         <Button
@@ -100,6 +120,50 @@ export function GameScreen() {
       </div>
 
       <EliminationDialog />
+    </div>
+  );
+}
+
+function RestrictionBadges({
+  nationality,
+  position,
+  turnKind,
+}: {
+  nationality: string | null;
+  position: RestrictedPosition | null;
+  turnKind: "player" | "club";
+}) {
+  if (turnKind !== "player" || (!nationality && !position)) return null;
+
+  const nation = nationality ? getNationEntry(nationality) : null;
+  const pos = position ? getPositionEntry(position) : null;
+
+  return (
+    <div className="flex flex-wrap justify-center gap-3">
+      {nation && (
+        <div className="flex flex-col items-center gap-1.5 rounded-xl border bg-card px-5 py-3 shadow-sm">
+          <span
+            className="text-4xl leading-none"
+            role="img"
+            aria-label={nation.nationality}
+          >
+            {nation.flag}
+          </span>
+          <span className="font-heading text-xs tracking-widest uppercase text-muted-foreground">
+            {nation.nationality} only
+          </span>
+        </div>
+      )}
+      {pos && (
+        <div className="flex flex-col items-center gap-1.5 rounded-xl border bg-card px-5 py-3 shadow-sm">
+          <span className="font-heading text-4xl font-bold leading-none tabular-nums text-primary">
+            {pos.abbr}
+          </span>
+          <span className="font-heading text-xs tracking-widest uppercase text-muted-foreground">
+            {pos.position}s only
+          </span>
+        </div>
+      )}
     </div>
   );
 }

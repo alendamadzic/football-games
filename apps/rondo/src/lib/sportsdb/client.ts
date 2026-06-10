@@ -94,7 +94,10 @@ export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
 
   const clubs = new Map<string, CareerClub>();
 
-  const addClub = (id: string | undefined | null, name: string | undefined | null) => {
+  const addClub = (
+    id: string | undefined | null,
+    name: string | undefined | null,
+  ) => {
     if (!id || !name || isNonSeniorClub(name)) return;
     clubs.set(id, { id, name });
   };

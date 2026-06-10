@@ -12,6 +12,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { useDebouncedValue } from "@/hooks/use-debounce";
+import { normalizePosition } from "@/lib/game/difficulty";
 import { referenceClub, referencePlayer } from "@/lib/game/reducer";
 import type { ChainLink } from "@/lib/game/types";
 import { searchClubsAction, searchPlayersAction } from "@/lib/sportsdb/actions";
@@ -82,6 +83,21 @@ export function AnswerInput() {
         toast.warning(
           `${club.name} is already in the chain — pick another club.`,
         );
+        return;
+      }
+    }
+
+    // Enforce active player restrictions before hitting the API.
+    if (lookingForPlayer) {
+      const player = item as PlayerResult;
+      const { nationality, position } = state.config.restrictions;
+
+      if (nationality && player.nationality !== nationality) {
+        dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
+        return;
+      }
+      if (position && normalizePosition(player.position) !== position) {
+        dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
         return;
       }
     }
@@ -204,9 +220,7 @@ function SuggestionRow({
     ? [(item as PlayerResult).position, (item as PlayerResult).nationality]
         .filter(Boolean)
         .join(" · ")
-    : [(item as ClubResult).country]
-        .filter(Boolean)
-        .join(" · ");
+    : [(item as ClubResult).country].filter(Boolean).join(" · ");
 
   return (
     <CommandItem value={item.id} onSelect={onPick} className="gap-3 py-2.5">

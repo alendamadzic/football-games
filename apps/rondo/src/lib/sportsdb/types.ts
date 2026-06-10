@@ -41,10 +41,26 @@ export type TmJerseyNumber = {
   jerseyNumber: number;
 };
 
-export type TmClubSearchResponse = { results: TmClub[]; page: number; lastPage: number };
-export type TmPlayerSearchResponse = { results: TmPlayer[]; page: number; lastPage: number };
-export type TmTransfersResponse = { id: string; transfers: TmTransfer[]; updatedAt: string };
-export type TmJerseyNumbersResponse = { id: string; jerseyNumbers: TmJerseyNumber[]; updatedAt: string };
+export type TmClubSearchResponse = {
+  results: TmClub[];
+  page: number;
+  lastPage: number;
+};
+export type TmPlayerSearchResponse = {
+  results: TmPlayer[];
+  page: number;
+  lastPage: number;
+};
+export type TmTransfersResponse = {
+  id: string;
+  transfers: TmTransfer[];
+  updatedAt: string;
+};
+export type TmJerseyNumbersResponse = {
+  id: string;
+  jerseyNumbers: TmJerseyNumber[];
+  updatedAt: string;
+};
 
 /** A normalized, UI-friendly club suggestion. */
 export type ClubResult = {

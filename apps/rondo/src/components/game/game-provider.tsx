@@ -27,6 +27,7 @@ function emptyState(mode: Mode): GameState {
       turnSeconds: 300,
       lives: 1,
       playerNames: mode === "arcade" ? ["You"] : ["", ""],
+      restrictions: { nationality: null, position: null },
     },
     chain: [],
     turnKind: "player",

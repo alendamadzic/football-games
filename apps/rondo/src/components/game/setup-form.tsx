@@ -5,6 +5,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  MAJOR_NATION_NAMES,
+  RESTRICTED_POSITIONS,
+} from "@/lib/game/difficulty";
 import type { GameConfig } from "@/lib/game/types";
 import { useGame } from "./game-provider";
 
@@ -16,17 +20,21 @@ const LOCAL_TIMER_OPTIONS = [
   { label: "1m", value: 60 },
   { label: "2m", value: 120 },
   { label: "5m", value: 300 },
+  { label: "Dynamic", value: "dynamic" as const },
 ] as const;
 
 const ARCADE_TIMER_OPTIONS = [
+  { label: "30s", value: 30 },
+  { label: "1m", value: 60 },
   { label: "3m", value: 180 },
   { label: "5m", value: 300 },
   { label: "10m", value: 600 },
+  { label: "Dynamic", value: "dynamic" as const },
 ] as const;
 
 const LIVES_OPTIONS = [1, 2, 3] as const;
 
-function Segmented<T extends string | number | null>({
+function Segmented<T extends string | number | boolean | null>({
   options,
   value,
   onChange,
@@ -62,7 +70,9 @@ export function SetupForm() {
 
   const [names, setNames] = useState<string[]>(["", ""]);
   const [lives, setLives] = useState<number>(1);
-  const [turnSeconds, setTurnSeconds] = useState<number | null>(300);
+  const [turnSeconds, setTurnSeconds] = useState<number | "dynamic" | null>(60);
+  const [nationalityEnabled, setNationalityEnabled] = useState(false);
+  const [positionEnabled, setPositionEnabled] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function updateName(index: number, value: string) {
@@ -83,12 +93,26 @@ export function SetupForm() {
     setError(null);
     let config: GameConfig;
 
+    const restrictions = {
+      nationality: nationalityEnabled
+        ? (MAJOR_NATION_NAMES[
+            Math.floor(Math.random() * MAJOR_NATION_NAMES.length)
+          ] ?? null)
+        : null,
+      position: positionEnabled
+        ? (RESTRICTED_POSITIONS[
+            Math.floor(Math.random() * RESTRICTED_POSITIONS.length)
+          ] ?? null)
+        : null,
+    };
+
     if (isArcade) {
       config = {
         mode: "arcade",
         turnSeconds,
         lives: 1,
         playerNames: ["You"],
+        restrictions,
       };
     } else {
       const cleaned = names.map((n) => n.trim()).filter(Boolean);
@@ -101,6 +125,7 @@ export function SetupForm() {
         turnSeconds,
         lives,
         playerNames: cleaned,
+        restrictions,
       };
     }
     void startGame(config);
@@ -209,6 +234,39 @@ export function SetupForm() {
             value={turnSeconds}
             onChange={setTurnSeconds}
           />
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <Label className="font-heading text-xs tracking-widest uppercase">
+            Restrictions
+            <span className="ml-2 font-sans text-xs font-normal tracking-normal text-muted-foreground normal-case">
+              randomly assigned at game start
+            </span>
+          </Label>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm">Nationality</span>
+              <Segmented
+                options={[
+                  { label: "Off", value: false },
+                  { label: "On", value: true },
+                ]}
+                value={nationalityEnabled}
+                onChange={setNationalityEnabled}
+              />
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-sm">Position</span>
+              <Segmented
+                options={[
+                  { label: "Off", value: false },
+                  { label: "On", value: true },
+                ]}
+                value={positionEnabled}
+                onChange={setPositionEnabled}
+              />
+            </div>
+          </div>
         </section>
 
         {(error || startError) && (

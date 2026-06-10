@@ -3,12 +3,17 @@
 import { Shield } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { getJerseyNumberAction } from "@/lib/sportsdb/actions";
 import type { ChainLink } from "@/lib/game/types";
+import { getJerseyNumberAction } from "@/lib/sportsdb/actions";
 import { cn } from "@/lib/utils";
 
-
-function ClubCard({ link, latest }: { link: Extract<ChainLink, { kind: "club" }>; latest: boolean }) {
+function ClubCard({
+  link,
+  latest,
+}: {
+  link: Extract<ChainLink, { kind: "club" }>;
+  latest: boolean;
+}) {
   return (
     <div
       className={cn(
@@ -42,7 +47,13 @@ function ClubCard({ link, latest }: { link: Extract<ChainLink, { kind: "club" }>
   );
 }
 
-function PlayerCard({ link, latest }: { link: Extract<ChainLink, { kind: "player" }>; latest: boolean }) {
+function PlayerCard({
+  link,
+  latest,
+}: {
+  link: Extract<ChainLink, { kind: "player" }>;
+  latest: boolean;
+}) {
   const [jerseyNumber, setJerseyNumber] = useState<number | null>(null);
 
   useEffect(() => {

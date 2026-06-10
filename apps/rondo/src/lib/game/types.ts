@@ -28,14 +28,29 @@ export type GamePlayer = {
   eliminated: boolean;
 };
 
+export type RestrictedPosition =
+  | "Goalkeeper"
+  | "Defender"
+  | "Midfielder"
+  | "Attacker";
+
+export type GameRestrictions = {
+  /** Required nationality for all players, e.g. "Brazilian". null = no restriction. */
+  nationality: string | null;
+  /** Required broad position for all players. null = no restriction. */
+  position: RestrictedPosition | null;
+};
+
 export type GameConfig = {
   mode: Mode;
-  /** Seconds per turn (local) or for the whole session (arcade). null = off. */
-  turnSeconds: number | null;
+  /** Seconds per turn (local) or for the whole session (arcade). null = off. "dynamic" = bracket-based shrinking timer. */
+  turnSeconds: number | "dynamic" | null;
   /** Starting lives per player (local only; arcade is always 1). */
   lives: number;
   /** Player names (local). Arcade ignores this. */
   playerNames: string[];
+  /** Optional player restrictions active for this game. */
+  restrictions: GameRestrictions;
 };
 
 export type EliminationInfo = {
