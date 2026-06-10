@@ -107,7 +107,8 @@ export function AnswerInput() {
           dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
           return;
         }
-        if (position && player.position && normalizePosition(player.position) !== position) {
+        const resolvedPosition = player.position ? normalizePosition(player.position) : null;
+        if (position && resolvedPosition && resolvedPosition !== position) {
           dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
           return;
         }
