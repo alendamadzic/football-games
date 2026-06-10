@@ -22,23 +22,13 @@ export const MAJOR_NATIONS: NationEntry[] = [
   { nationality: "Argentine", flag: "🇦🇷" },
   { nationality: "Belgian", flag: "🇧🇪" },
   { nationality: "Brazilian", flag: "🇧🇷" },
-  { nationality: "Colombian", flag: "🇨🇴" },
-  { nationality: "Croatian", flag: "🇭🇷" },
   { nationality: "Dutch", flag: "🇳🇱" },
   { nationality: "English", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
   { nationality: "French", flag: "🇫🇷" },
   { nationality: "German", flag: "🇩🇪" },
-  { nationality: "Ghanaian", flag: "🇬🇭" },
   { nationality: "Italian", flag: "🇮🇹" },
-  { nationality: "Ivorian", flag: "🇨🇮" },
-  { nationality: "Mexican", flag: "🇲🇽" },
-  { nationality: "Nigerian", flag: "🇳🇬" },
   { nationality: "Portuguese", flag: "🇵🇹" },
-  { nationality: "Senegalese", flag: "🇸🇳" },
   { nationality: "Spanish", flag: "🇪🇸" },
-  { nationality: "Uruguayan", flag: "🇺🇾" },
-  { nationality: "Welsh", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
-  { nationality: "Scottish", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
 ];
 
 /** Returns just the nationality strings for backward-compat use in config. */
