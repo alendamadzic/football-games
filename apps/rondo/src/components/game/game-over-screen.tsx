@@ -1,15 +1,54 @@
 "use client";
 
-import { Home, RotateCcw, Trophy } from "lucide-react";
+import { Home, RotateCcw, Share2, Trophy } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { getNationEntry, getPositionEntry } from "@/lib/game/difficulty";
-import type { GameConfig } from "@/lib/game/types";
+import { generateShareImage } from "@/lib/game/share-image";
+import type { GameConfig, GameState } from "@/lib/game/types";
 import { ChainTimeline } from "./chain-timeline";
 import { useGame } from "./game-provider";
 
+async function shareResult(state: GameState): Promise<void> {
+  let blob: Blob;
+  try {
+    blob = await generateShareImage(state);
+  } catch {
+    toast.error("Couldn't generate image");
+    return;
+  }
+
+  const file = new File([blob], "rondo-result.png", { type: "image/png" });
+
+  // Mobile: native share sheet with file
+  if (
+    typeof navigator !== "undefined" &&
+    navigator.canShare?.({ files: [file] })
+  ) {
+    try {
+      await navigator.share({ files: [file] });
+      return;
+    } catch {
+      // User cancelled — don't fall through to download
+      return;
+    }
+  }
+
+  // Desktop: trigger download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "rondo-result.png";
+  a.click();
+  URL.revokeObjectURL(url);
+  toast.success("Image saved!");
+}
+
 export function GameOverScreen() {
   const { state, resetToSetup } = useGame();
+  const [sharing, setSharing] = useState(false);
   const isArcade = state.mode === "arcade";
   const winner = state.players.find((p) => p.id === state.winnerId);
   const links = state.chain.length - 1;
@@ -70,6 +109,19 @@ export function GameOverScreen() {
         <Button size="lg" onClick={resetToSetup}>
           <RotateCcw aria-hidden />
           Play again
+        </Button>
+        <Button
+          size="lg"
+          variant="outline"
+          disabled={sharing}
+          onClick={async () => {
+            setSharing(true);
+            await shareResult(state);
+            setSharing(false);
+          }}
+        >
+          <Share2 aria-hidden />
+          {sharing ? "Generating…" : "Share result"}
         </Button>
         <Button
           size="lg"
