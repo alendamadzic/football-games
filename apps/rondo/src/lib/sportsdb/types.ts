@@ -62,6 +62,10 @@ export type TmJerseyNumbersResponse = {
   updatedAt: string;
 };
 
+export type TmClubPlayersResponse = {
+  players: TmPlayer[];
+};
+
 /** A normalized, UI-friendly club suggestion. */
 export type ClubResult = {
   id: string;

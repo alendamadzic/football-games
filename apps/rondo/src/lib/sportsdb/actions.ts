@@ -1,7 +1,10 @@
 "use server";
 
+import { normalizePosition } from "@/lib/game/difficulty";
 import { shuffledStartingClubNames } from "@/lib/game/starting-clubs";
+import type { GameRestrictions } from "@/lib/game/types";
 import {
+  getClubSquad,
   getJerseyNumber,
   getPlayerClubs,
   normalizeClubName,
@@ -11,11 +14,36 @@ import {
 import type { ClubResult, PlayerResult, VerifyResult } from "./types";
 
 /**
- * Resolves a random well-known club to a live TheSportsDB record (canonical id
- * + badge) to seed a new game. Walks a shuffled pool until one resolves, so a
- * single bad lookup never blocks game start.
+ * Returns true if the club's current squad contains at least one player
+ * satisfying all active restrictions. Fails open (returns true) on API errors
+ * so a network hiccup never silently blocks game start.
  */
-export async function getStartingClubAction(): Promise<ClubResult | null> {
+async function clubHasValidAnswer(
+  clubId: string,
+  restrictions: GameRestrictions,
+): Promise<boolean> {
+  const { nationality, position } = restrictions;
+  if (!nationality && !position) return true;
+  try {
+    const squad = await getClubSquad(clubId);
+    return squad.some((p) => {
+      if (nationality && p.nationality !== nationality) return false;
+      if (position && normalizePosition(p.position) !== position) return false;
+      return true;
+    });
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Resolves a random well-known club to a live Transfermarkt record (canonical
+ * id + badge) to seed a new game. When restrictions are active, walks the pool
+ * until a club whose current squad has at least one matching player is found.
+ */
+export async function getStartingClubAction(
+  restrictions?: GameRestrictions,
+): Promise<ClubResult | null> {
   for (const name of shuffledStartingClubNames()) {
     try {
       const results = await searchTeams(name);
@@ -23,7 +51,14 @@ export async function getStartingClubAction(): Promise<ClubResult | null> {
       const target = normalizeClubName(name);
       const exact = results.find((r) => normalizeClubName(r.name) === target);
       const pick = exact ?? results[0];
-      if (pick.badge) return pick;
+      if (!pick.badge) continue;
+      if (
+        restrictions &&
+        !(await clubHasValidAnswer(pick.id, restrictions))
+      ) {
+        continue;
+      }
+      return pick;
     } catch {
       // Try the next club.
     }

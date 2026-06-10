@@ -79,7 +79,7 @@ export function GameProvider({
     setStartError(null);
     verifyCache.current.clear();
     try {
-      const seed = await getStartingClubAction();
+      const seed = await getStartingClubAction(config.restrictions);
       if (!seed) {
         setStartError(
           "Couldn't reach the football database to pick a starting club. Check your connection and try again.",
