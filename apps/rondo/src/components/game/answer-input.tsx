@@ -92,11 +92,11 @@ export function AnswerInput() {
       const player = item as PlayerResult;
       const { nationality, position } = state.config.restrictions;
 
-      if (nationality && player.nationality !== nationality) {
+      if (nationality && player.nationality && player.nationality !== nationality) {
         dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
         return;
       }
-      if (position && normalizePosition(player.position) !== position) {
+      if (position && player.position && normalizePosition(player.position) !== position) {
         dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
         return;
       }
