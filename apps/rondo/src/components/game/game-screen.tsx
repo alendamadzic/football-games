@@ -34,15 +34,8 @@ export function GameScreen() {
     dispatch({ type: "FAIL", reason: "timeout", attempted: null });
   }, [dispatch]);
 
-  // Local: a fresh per-turn clock. Arcade: one clock for the whole session,
-  // keyed to the seed so it restarts only on a new game.
-  // Dynamic timer always uses a per-turn key regardless of mode.
-  const seed = state.chain[0];
   const isDynamic = state.config.turnSeconds === "dynamic";
-  const resetKey =
-    isDynamic || !isArcade
-      ? `${state.chain.length}-${state.activePlayerIndex}`
-      : `arcade-${seed?.id ?? "idle"}`;
+  const resetKey = `${state.chain.length}-${state.activePlayerIndex}`;
 
   const effectiveSeconds: number | null = isDynamic
     ? getDynamicSeconds(state.chain.length)
