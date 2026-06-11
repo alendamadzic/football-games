@@ -1,4 +1,4 @@
-import type { CareerClub } from "@/lib/sportsdb/types";
+import type { CareerClub } from "../sportsdb/types";
 
 export type Mode = "local" | "arcade";
 

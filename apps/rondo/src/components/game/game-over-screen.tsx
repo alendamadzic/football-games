@@ -47,7 +47,7 @@ async function shareResult(state: GameState): Promise<void> {
 }
 
 export function GameOverScreen() {
-  const { state, resetToSetup } = useGame();
+  const { state, resetToSetup, isOnline, isHost, rematch } = useGame();
   const [sharing, setSharing] = useState(false);
   const isArcade = state.mode === "arcade";
   const winner = state.players.find((p) => p.id === state.winnerId);
@@ -106,10 +106,23 @@ export function GameOverScreen() {
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <Button size="lg" onClick={resetToSetup}>
-          <RotateCcw aria-hidden />
-          Play again
-        </Button>
+        {isOnline ? (
+          isHost ? (
+            <Button size="lg" onClick={rematch}>
+              <RotateCcw aria-hidden />
+              Rematch
+            </Button>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Waiting for the host to start a rematch…
+            </p>
+          )
+        ) : (
+          <Button size="lg" onClick={resetToSetup}>
+            <RotateCcw aria-hidden />
+            Play again
+          </Button>
+        )}
         <Button
           size="lg"
           variant="outline"

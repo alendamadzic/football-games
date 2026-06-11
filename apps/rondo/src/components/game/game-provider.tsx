@@ -42,7 +42,7 @@ function emptyState(mode: Mode): GameState {
   };
 }
 
-type GameContextValue = {
+export type GameContextValue = {
   state: GameState;
   mode: Mode;
   dispatch: Dispatch<GameAction>;
@@ -56,9 +56,23 @@ type GameContextValue = {
     clubId: string,
     clubName: string,
   ) => Promise<VerifyResult>;
+
+  // --- Online extensions (local/arcade providers supply the defaults below) ---
+  /** True when state is driven by a Convex room rather than a local reducer. */
+  isOnline: boolean;
+  /** Whether the local device owns the current turn. Always true offline. */
+  isMyTurn: boolean;
+  /** Whether the local device is the room host. Always true offline. */
+  isHost: boolean;
+  /** Host-only: force-fail the current (likely absent) player's turn. Online only. */
+  skipTurn?: () => void;
+  /** Host-only: start a fresh game with the same players. Online only. */
+  rematch?: () => void;
 };
 
-const GameContext = createContext<GameContextValue | null>(null);
+// Exported so the online provider can publish to the same context, letting the
+// shared game components consume either backend through useGame().
+export const GameContext = createContext<GameContextValue | null>(null);
 
 export function GameProvider({
   mode,
@@ -130,6 +144,9 @@ export function GameProvider({
       startGame,
       resetToSetup,
       verifyLink,
+      isOnline: false,
+      isMyTurn: true,
+      isHost: true,
     }),
     [state, mode, starting, startError, startGame, resetToSetup, verifyLink],
   );

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Geist_Mono, Oxanium } from "next/font/google";
 import "./globals.css";
+import { ConvexClientProvider } from "@/components/convex-provider";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { Toaster } from "@/components/ui/sonner";
@@ -56,7 +57,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          {children}
+          <ConvexClientProvider>{children}</ConvexClientProvider>
           <Toaster />
         </ThemeProvider>
       </body>

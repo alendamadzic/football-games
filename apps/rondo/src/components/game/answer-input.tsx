@@ -103,11 +103,17 @@ export function AnswerInput() {
         const player = item as PlayerResult;
         const { nationality, position } = state.config.restrictions;
 
-        if (nationality && player.nationality && resolveNationality(player.nationality) !== nationality) {
+        if (
+          nationality &&
+          player.nationality &&
+          resolveNationality(player.nationality) !== nationality
+        ) {
           dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
           return;
         }
-        const resolvedPosition = player.position ? normalizePosition(player.position) : null;
+        const resolvedPosition = player.position
+          ? normalizePosition(player.position)
+          : null;
         if (position && resolvedPosition && resolvedPosition !== position) {
           dispatch({ type: "FAIL", reason: "wrong", attempted: item.name });
           return;

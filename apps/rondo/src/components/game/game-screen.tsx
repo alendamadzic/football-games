@@ -1,6 +1,6 @@
 "use client";
 
-import { Flag } from "lucide-react";
+import { Flag, Loader2, SkipForward } from "lucide-react";
 import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
@@ -27,12 +27,15 @@ import { TimerBar } from "./timer-bar";
 import { TurnBanner } from "./turn-banner";
 
 export function GameScreen() {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, isOnline, isMyTurn, isHost, skipTurn } = useGame();
   const isArcade = state.mode === "arcade";
 
   const handleTimeout = useCallback(() => {
+    // Online: only the active player's client fires the timeout, so an absent
+    // player can't have their clock run out on someone else's device.
+    if (isOnline && !isMyTurn) return;
     dispatch({ type: "FAIL", reason: "timeout", attempted: null });
-  }, [dispatch]);
+  }, [dispatch, isOnline, isMyTurn]);
 
   const isDynamic = state.config.turnSeconds === "dynamic";
   const resetKey = `${state.chain.length}-${state.activePlayerIndex}`;
@@ -98,18 +101,40 @@ export function GameScreen() {
           position={state.config.restrictions.position}
           turnKind={state.turnKind}
         />
-        <AnswerInput key={`${state.chain.length}-${state.activePlayerIndex}`} />
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() =>
-            dispatch({ type: "FAIL", reason: "gaveup", attempted: null })
-          }
-          className="text-muted-foreground"
-        >
-          <Flag aria-hidden />
-          {isArcade ? "End run" : "Give up turn"}
-        </Button>
+        {!isOnline || isMyTurn ? (
+          <AnswerInput
+            key={`${state.chain.length}-${state.activePlayerIndex}`}
+          />
+        ) : (
+          <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed bg-card/50 px-4 py-6 text-sm text-muted-foreground">
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+            Waiting for {active?.name ?? "the other player"}…
+          </div>
+        )}
+        {(!isOnline || isMyTurn) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              dispatch({ type: "FAIL", reason: "gaveup", attempted: null })
+            }
+            className="text-muted-foreground"
+          >
+            <Flag aria-hidden />
+            {isArcade ? "End run" : "Give up turn"}
+          </Button>
+        )}
+        {isOnline && isHost && !isMyTurn && skipTurn && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={skipTurn}
+            className="text-muted-foreground"
+          >
+            <SkipForward aria-hidden />
+            Skip {active?.name ?? "player"}&rsquo;s turn
+          </Button>
+        )}
       </div>
 
       <EliminationDialog />

@@ -1,4 +1,6 @@
-import { normalizeClubName } from "@/lib/sportsdb/normalize";
+// Relative (not "@/") so this pure module is importable from the Convex bundler,
+// which does not resolve the app's path alias.
+import { normalizeClubName } from "../sportsdb/normalize";
 import type {
   ChainLink,
   GameAction,

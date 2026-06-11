@@ -1,4 +1,4 @@
-import { ArrowRight, Users, Zap } from "lucide-react";
+import { ArrowRight, Globe, Users, Zap } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { Wordmark } from "@/components/wordmark";
@@ -58,7 +58,14 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
+        <div className="grid w-full max-w-4xl gap-4 sm:grid-cols-3">
+          <ModeCard
+            href="/online"
+            icon={<Globe className="size-5" aria-hidden />}
+            title="Online"
+            description="Play friends on their own devices. Host a game and share the code."
+            accent="bg-primary/15 text-primary"
+          />
           <ModeCard
             href="/local"
             icon={<Users className="size-5" aria-hidden />}

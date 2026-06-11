@@ -16,7 +16,10 @@ const W = 1080;
 const H = 1080;
 const PAD = 72;
 
-function timerLabel(turnSeconds: GameConfig["turnSeconds"], isArcade: boolean): string {
+function timerLabel(
+  turnSeconds: GameConfig["turnSeconds"],
+  isArcade: boolean,
+): string {
   if (turnSeconds === "dynamic") return "Dynamic timer";
   if (turnSeconds === null) return "No timer";
   const val = turnSeconds < 60 ? `${turnSeconds}s` : `${turnSeconds / 60}m`;
@@ -179,7 +182,10 @@ export async function generateShareImage(state: GameState): Promise<Blob> {
     const winnerName = (winner?.name ?? "Nobody").toUpperCase();
     let fontSize = 140;
     ctx.font = `400 ${fontSize}px "Anton", sans-serif`;
-    while (ctx.measureText(winnerName).width > W - PAD * 2 - 40 && fontSize > 60) {
+    while (
+      ctx.measureText(winnerName).width > W - PAD * 2 - 40 &&
+      fontSize > 60
+    ) {
       fontSize -= 4;
       ctx.font = `400 ${fontSize}px "Anton", sans-serif`;
     }
@@ -187,28 +193,37 @@ export async function generateShareImage(state: GameState): Promise<Blob> {
 
     ctx.font = `400 52px "Anton", sans-serif`;
     ctx.fillStyle = C.white;
-    ctx.fillText(
-      `${links}-LINK CHAIN`,
-      PAD + 20,
-      heroY + fontSize + 10 + 68,
-    );
+    ctx.fillText(`${links}-LINK CHAIN`, PAD + 20, heroY + fontSize + 10 + 68);
   }
 
   // ── Settings chips ────────────────────────────────────────────────────────
   const { turnSeconds, restrictions } = state.config;
-  const nation = restrictions.nationality ? getNationEntry(restrictions.nationality) : null;
-  const pos = restrictions.position ? getPositionEntry(restrictions.position) : null;
+  const nation = restrictions.nationality
+    ? getNationEntry(restrictions.nationality)
+    : null;
+  const pos = restrictions.position
+    ? getPositionEntry(restrictions.position)
+    : null;
 
   const chips: Array<{ label: string; sub: string }> = [];
-  chips.push({ label: timerLabel(turnSeconds, isArcade).split(" ")[0], sub: timerLabel(turnSeconds, isArcade).split(" ").slice(1).join(" ") || "timer" });
+  chips.push({
+    label: timerLabel(turnSeconds, isArcade).split(" ")[0],
+    sub:
+      timerLabel(turnSeconds, isArcade).split(" ").slice(1).join(" ") ||
+      "timer",
+  });
 
-  if (nation) chips.push({ label: nation.flag, sub: `${nation.nationality} only` });
+  if (nation)
+    chips.push({ label: nation.flag, sub: `${nation.nationality} only` });
   if (pos) chips.push({ label: pos.abbr, sub: `${pos.position}s only` });
   if (!nation && !pos) chips.push({ label: "—", sub: "No restrictions" });
 
   const chipH = 88;
   const chipGap = 16;
-  const chipW = Math.min(220, (W - PAD * 2 - 20 - chipGap * (chips.length - 1)) / chips.length);
+  const chipW = Math.min(
+    220,
+    (W - PAD * 2 - 20 - chipGap * (chips.length - 1)) / chips.length,
+  );
   const chipsY = H - PAD - 88 - chipH - 20;
 
   chips.forEach((chip, i) => {
@@ -241,7 +256,8 @@ export async function generateShareImage(state: GameState): Promise<Blob> {
 
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("canvas.toBlob failed"))),
+      (blob) =>
+        blob ? resolve(blob) : reject(new Error("canvas.toBlob failed")),
       "image/png",
     );
   });

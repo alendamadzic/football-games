@@ -20,7 +20,7 @@ const REASON_TEXT: Record<EliminationInfo["reason"], string> = {
 };
 
 export function EliminationDialog() {
-  const { state, dispatch } = useGame();
+  const { state, dispatch, isOnline, isHost } = useGame();
   const open = state.phase === "elimination";
   const info = state.lastElimination;
   if (!info) return null;
@@ -87,9 +87,15 @@ export function EliminationDialog() {
         )}
 
         <DialogFooter>
-          <Button onClick={() => dispatch({ type: "CONTINUE" })} size="lg">
-            {lastResult ? "See result" : "Next player"}
-          </Button>
+          {isOnline && !isHost ? (
+            <p className="text-sm text-muted-foreground">
+              Waiting for the host to continue…
+            </p>
+          ) : (
+            <Button onClick={() => dispatch({ type: "CONTINUE" })} size="lg">
+              {lastResult ? "See result" : "Next player"}
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
