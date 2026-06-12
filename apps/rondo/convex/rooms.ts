@@ -238,24 +238,18 @@ export const skipTurn = mutation({
   },
 });
 
-export const rematch = mutation({
-  args: {
-    code: v.string(),
-    hostDeviceId: v.string(),
-    config: gameConfig,
-    seed: seedClub,
-  },
-  handler: async (ctx, { code, hostDeviceId, config, seed }) => {
+export const returnToLobby = mutation({
+  args: { code: v.string(), hostDeviceId: v.string() },
+  handler: async (ctx, { code, hostDeviceId }) => {
     const room = await roomByCode(ctx, code);
     if (!room) throw new Error("Room not found");
     if (room.hostDeviceId !== hostDeviceId)
-      throw new Error("Only the host can start a rematch");
+      throw new Error("Only the host can return to the lobby");
 
-    const state = buildGameState(room, config, seed);
     await ctx.db.patch(room._id, {
-      state,
-      seatDeviceIds: room.members.map((m) => m.deviceId),
-      turnStartedAt: Date.now(),
+      state: null,
+      seatDeviceIds: [],
+      turnStartedAt: null,
       updatedAt: Date.now(),
     });
   },

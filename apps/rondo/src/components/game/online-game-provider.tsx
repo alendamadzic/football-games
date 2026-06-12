@@ -3,10 +3,7 @@
 import { useMutation } from "convex/react";
 import { useCallback, useMemo, useRef } from "react";
 import type { GameAction, GameState } from "@/lib/game/types";
-import {
-  getStartingClubAction,
-  verifyLinkAction,
-} from "@/lib/sportsdb/actions";
+import { verifyLinkAction } from "@/lib/sportsdb/actions";
 import type { VerifyResult } from "@/lib/sportsdb/types";
 import { api } from "../../../convex/_generated/api";
 import type { Doc } from "../../../convex/_generated/dataModel";
@@ -38,7 +35,7 @@ export function OnlineGameProvider({
   const failMut = useMutation(api.rooms.fail);
   const continueMut = useMutation(api.rooms.continueTurn);
   const skipMut = useMutation(api.rooms.skipTurn);
-  const rematchMut = useMutation(api.rooms.rematch);
+  const returnToLobbyMut = useMutation(api.rooms.returnToLobby);
 
   // Reuse the existing per-link verification (still runs on the active device).
   const verifyCache = useRef(new Map<string, VerifyResult>());
@@ -86,17 +83,8 @@ export function OnlineGameProvider({
   }, [code, deviceId, skipMut]);
 
   const rematch = useCallback(() => {
-    void (async () => {
-      const seed = await getStartingClubAction(state.config.restrictions);
-      if (!seed) return;
-      await rematchMut({
-        code,
-        hostDeviceId: deviceId,
-        config: state.config,
-        seed: { id: seed.id, name: seed.name, badge: seed.badge },
-      });
-    })();
-  }, [code, deviceId, rematchMut, state.config]);
+    void returnToLobbyMut({ code, hostDeviceId: deviceId });
+  }, [code, deviceId, returnToLobbyMut]);
 
   const value = useMemo<GameContextValue>(
     () => ({

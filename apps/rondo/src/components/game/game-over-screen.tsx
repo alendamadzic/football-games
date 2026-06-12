@@ -110,11 +110,11 @@ export function GameOverScreen() {
           isHost ? (
             <Button size="lg" onClick={rematch}>
               <RotateCcw aria-hidden />
-              Rematch
+              Back to lobby
             </Button>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Waiting for the host to start a rematch…
+              Waiting for the host to return to the lobby…
             </p>
           )
         ) : (
