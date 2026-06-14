@@ -185,7 +185,7 @@ function Masthead({
               /{game.total}
             </span>
           </p>
-          <div className="mt-1.5 h-2 w-36 overflow-hidden rounded-full bg-[oklch(0.24_0.028_60/.15)]">
+          <div className="mx-auto mt-1.5 h-2 w-36 overflow-hidden rounded-full bg-[oklch(0.24_0.028_60/.15)]">
             <div
               className="h-full rounded-full bg-primary transition-[width] duration-500"
               style={{ width: `${pct}%` }}
