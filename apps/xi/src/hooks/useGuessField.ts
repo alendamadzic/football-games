@@ -1,16 +1,28 @@
 "use client";
 
-import {
-  type KeyboardEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { buildPool, buildSuggestions } from "@/lib/suggest";
+import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import type { Match } from "@/lib/types";
 
 export type GuessResult = "correct" | "wrong" | "duplicate";
+
+async function fetchSuggestions(query: string): Promise<string[]> {
+  if (query.length < 2) return [];
+  try {
+    const res = await fetch(
+      `/api/players/search?q=${encodeURIComponent(query)}`,
+    );
+    if (!res.ok) return [];
+    const data = (await res.json()) as {
+      results?: { name?: string }[];
+    };
+    return (data.results ?? [])
+      .map((r) => r.name ?? "")
+      .filter(Boolean)
+      .slice(0, 6);
+  } catch {
+    return [];
+  }
+}
 
 // Headless logic for the "type a name" guess field, shared across every design
 // so each one only has to render its own markup. Manages the input value,
@@ -21,33 +33,37 @@ export function useGuessField(
   onGuess: (input: string) => GuessResult,
 ) {
   const [value, setValue] = useState("");
-  const [debounced, setDebounced] = useState("");
   const [highlight, setHighlight] = useState(0);
   const [flash, setFlash] = useState<GuessResult | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const pool = useMemo(() => buildPool(match), [match]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    const id = setTimeout(() => setDebounced(value), 120);
-    return () => clearTimeout(id);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (value.trim().length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      if (abortRef.current) abortRef.current.abort();
+      abortRef.current = new AbortController();
+      const results = await fetchSuggestions(value.trim());
+      setSuggestions(results);
+      setHighlight(0);
+    }, 250);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
   }, [value]);
-
-  const suggestions = useMemo(
-    () => buildSuggestions(pool, guessed, debounced),
-    [pool, guessed, debounced],
-  );
-
-  // Reset the highlighted suggestion whenever the result set changes.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: length is the intended trigger
-  useEffect(() => setHighlight(0), [suggestions.length]);
 
   function submit(raw: string): GuessResult | undefined {
     const input = raw.trim();
     if (!input) return;
     const result = onGuess(input);
     setValue("");
-    setDebounced("");
+    setSuggestions([]);
     setFlash(result);
     setTimeout(() => setFlash(null), 650);
     inputRef.current?.focus();
@@ -67,7 +83,7 @@ export function useGuessField(
       submit(chosen ?? value);
     } else if (e.key === "Escape") {
       setValue("");
-      setDebounced("");
+      setSuggestions([]);
     }
   }
 
