@@ -12,6 +12,7 @@ export const playerValidator = v.object({
   ),
   number: v.number(), // shirt number
   nationality: v.string(), // e.g. "Danish"
+  transfermarktId: v.optional(v.string()), // e.g. "17259" — used for reliable photo lookup
 });
 
 export default defineSchema({

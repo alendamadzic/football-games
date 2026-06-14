@@ -6,6 +6,7 @@ export interface Player {
   position: Position;
   number: number;
   nationality: string;
+  transfermarktId?: string;
 }
 
 export interface Match {

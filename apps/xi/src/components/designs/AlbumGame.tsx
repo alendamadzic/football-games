@@ -12,6 +12,7 @@ import { useGuessField } from "@/hooks/useGuessField";
 import { formatTime, todayUTC } from "@/lib/format";
 import { formationLabel } from "@/lib/formation";
 import { nationalityFlag } from "@/lib/nationality";
+import { fetchPlayerPhotos } from "@/lib/transfermarkt";
 import type { Match, Player } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,13 @@ export function AlbumGame({ match }: { match: Match }) {
   const game = useGameState(match, persistKey);
   const over = game.status !== "playing";
   const [helpOpen, setHelpOpen] = useState(false);
+  const [photos, setPhotos] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetchPlayerPhotos([...match.homePlayers, ...match.awayPlayers]).then(
+      setPhotos,
+    );
+  }, [match]);
 
   // Show the rules once, on the very first visit.
   useEffect(() => {
@@ -61,6 +69,7 @@ export function AlbumGame({ match }: { match: Match }) {
               match={match}
               game={game}
               over={over}
+              photos={photos}
             />
             <TeamPage
               side="away"
@@ -68,6 +77,7 @@ export function AlbumGame({ match }: { match: Match }) {
               match={match}
               game={game}
               over={over}
+              photos={photos}
             />
           </div>
         </div>
@@ -236,12 +246,14 @@ function TeamPage({
   match,
   game,
   over,
+  photos,
 }: {
   side: "home" | "away";
   ink: string;
   match: Match;
   game: ReturnType<typeof useGameState>;
   over: boolean;
+  photos: Record<string, string>;
 }) {
   const players = side === "home" ? match.homePlayers : match.awayPlayers;
   const teamName = side === "home" ? match.homeTeam : match.awayTeam;
@@ -274,6 +286,7 @@ function TeamPage({
             index={i}
             collected={game.isGuessed(side, i)}
             over={over}
+            photoUrl={photos[player.name]}
           />
         ))}
       </div>
@@ -290,6 +303,7 @@ function Sticker({
   index,
   collected,
   over,
+  photoUrl,
 }: {
   player: Player;
   ink: string;
@@ -297,6 +311,7 @@ function Sticker({
   index: number;
   collected: boolean;
   over: boolean;
+  photoUrl?: string;
 }) {
   const missing = over && !collected;
 
@@ -320,7 +335,7 @@ function Sticker({
         </div>
         {/* portrait */}
         <div
-          className="relative flex flex-1 items-center justify-center"
+          className="relative flex flex-1 items-center justify-center overflow-hidden"
           style={{
             background: `linear-gradient(160deg, color-mix(in oklab, ${ink} 22%, white), white)`,
           }}
@@ -338,9 +353,18 @@ function Sticker({
           {player.position === "GK" && (
             <Star className="absolute right-1 top-1 z-10 size-3.5 fill-amber-300 text-amber-500 drop-shadow" />
           )}
-          <span className="select-none text-4xl leading-none drop-shadow-sm sm:text-[2.75rem]">
-            {nationalityFlag(player.nationality)}
-          </span>
+          {photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={photoUrl}
+              alt={player.name}
+              className="absolute inset-0 h-full w-full object-contain object-center"
+            />
+          ) : (
+            <span className="select-none text-4xl leading-none drop-shadow-sm sm:text-[2.75rem]">
+              {nationalityFlag(player.nationality)}
+            </span>
+          )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/45 via-transparent to-transparent" />
         </div>
         {/* name banner */}
