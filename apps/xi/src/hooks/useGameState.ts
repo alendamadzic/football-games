@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import type { Match, Player } from "@/lib/types";
 import { nameMatches } from "@/lib/fuzzy";
 
@@ -84,10 +91,14 @@ export function useGameState(match: Match, persistKey?: string): GameApi {
     initial,
   );
 
-  const restored = useRef(false);
+  // `hydrated` is state (not a ref) so the persist effect below cannot run
+  // until the RESTORE dispatch has been applied. This prevents a mount-time
+  // race where persisting the initial empty state would clobber saved progress
+  // — important now that the same game is shared across multiple design routes.
+  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
     if (!persistKey || typeof window === "undefined") {
-      restored.current = true;
+      setHydrated(true);
       return;
     }
     const raw = window.localStorage.getItem(persistKey);
@@ -108,12 +119,12 @@ export function useGameState(match: Match, persistKey?: string): GameApi {
         // Corrupt save — ignore and start fresh.
       }
     }
-    restored.current = true;
+    setHydrated(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [persistKey]);
 
   useEffect(() => {
-    if (!persistKey || !restored.current || typeof window === "undefined") return;
+    if (!hydrated || !persistKey || typeof window === "undefined") return;
     window.localStorage.setItem(
       persistKey,
       JSON.stringify({
@@ -124,7 +135,7 @@ export function useGameState(match: Match, persistKey?: string): GameApi {
         status: state.status,
       }),
     );
-  }, [persistKey, state]);
+  }, [persistKey, state, hydrated]);
 
   const statusRef = useRef(state.status);
   statusRef.current = state.status;

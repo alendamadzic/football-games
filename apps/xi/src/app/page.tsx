@@ -1,16 +1,14 @@
 import { Suspense } from "react";
-import { getTodaysMatch } from "@/lib/match";
-import { Game } from "@/components/xi/Game";
+import { AlbumGame } from "@/components/designs/AlbumGame";
 import { SetupNotice } from "@/components/xi/SetupNotice";
+import { getTodaysMatch } from "@/lib/match";
 
 export default async function HomePage() {
   const match = await getTodaysMatch();
-
   if (!match) return <SetupNotice />;
-
   return (
     <Suspense>
-      <Game match={match} />
+      <AlbumGame match={match} />
     </Suspense>
   );
 }
