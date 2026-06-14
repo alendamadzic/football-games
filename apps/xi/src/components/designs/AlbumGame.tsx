@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { HowToPlayModal } from "@/components/xi/HowToPlayModal";
 import { ResultSync } from "@/components/xi/ResultSync";
 import { ShareCard } from "@/components/xi/ShareCard";
-import { ThemeToggle } from "@/components/xi/ThemeToggle";
 import { useGameState } from "@/hooks/useGameState";
 import { useGuessField } from "@/hooks/useGuessField";
 import { formatTime, todayUTC } from "@/lib/format";
@@ -138,7 +137,6 @@ function TopNav({ onHelp }: { onHelp: () => void }) {
         >
           <HelpCircle className="size-5" />
         </button>
-        <ThemeToggle />
       </div>
     </div>
   );

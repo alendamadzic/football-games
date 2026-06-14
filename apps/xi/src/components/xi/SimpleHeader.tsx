@@ -4,7 +4,6 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
-import { ThemeToggle } from "./ThemeToggle";
 
 export function SimpleHeader() {
   return (
@@ -20,7 +19,6 @@ export function SimpleHeader() {
           >
             <ArrowLeft className="size-5" />
           </Button>
-          <ThemeToggle />
         </div>
       </div>
     </header>
