@@ -20,7 +20,6 @@ export function ResultSync({
   seconds: number;
 }) {
   const saveResult = useMutation(api.results.saveResult);
-  const updateStats = useMutation(api.stats.updateStats);
   const synced = useRef(false);
 
   useEffect(() => {
@@ -41,8 +40,7 @@ export function ResultSync({
       completed: true,
       won,
     });
-    void updateStats({ userId, date, won });
-  }, [status, matchSlug, score, lives, seconds, saveResult, updateStats]);
+  }, [status, matchSlug, score, lives, seconds, saveResult]);
 
   return null;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, HelpCircle, Star } from "lucide-react";
+import { HelpCircle, Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HowToPlayModal } from "@/components/xi/HowToPlayModal";
@@ -126,9 +126,6 @@ function TopNav({ onHelp }: { onHelp: () => void }) {
         xi<span className="text-primary">.</span>
       </Link>
       <div className="flex items-center gap-1">
-        <Link href="/stats" aria-label="Stats" className={iconBtn}>
-          <BarChart3 className="size-5" />
-        </Link>
         <button
           type="button"
           aria-label="How to play"
