@@ -3,6 +3,15 @@
 import { HelpCircle, Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { HowToPlayModal } from "@/components/xi/HowToPlayModal";
 import { ResultSync } from "@/components/xi/ResultSync";
 import { ShareCard } from "@/components/xi/ShareCard";
@@ -445,6 +454,7 @@ function StickerBar({
   game: ReturnType<typeof useGameState>;
 }) {
   const f = useGuessField(match, game.guessed, game.guess);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-30 border-t-4 border-[oklch(0.24_0.028_60)] bg-[oklch(0.955_0.02_88)]">
@@ -520,7 +530,39 @@ function StickerBar({
             ))}
           </div>
         )}
+        <div className="mt-2 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setConfirmOpen(true)}
+            className="text-[0.6rem] font-bold uppercase tracking-widest text-[oklch(0.4_0.03_60/.45)] transition-colors hover:text-destructive hover:underline"
+          >
+            Give up?
+          </button>
+        </div>
       </div>
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Give up?</DialogTitle>
+            <DialogDescription>
+              This ends today&apos;s game and reveals every player, guessed or
+              not. You can&apos;t undo this.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter showCloseButton>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setConfirmOpen(false);
+                game.giveUp();
+              }}
+            >
+              Give up
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

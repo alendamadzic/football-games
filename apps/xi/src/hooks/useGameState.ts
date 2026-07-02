@@ -27,6 +27,7 @@ type Action =
   | { type: "CORRECT"; keys: string[] }
   | { type: "WRONG"; guess: string }
   | { type: "TICK" }
+  | { type: "GIVE_UP" }
   | { type: "RESTORE"; state: Partial<State> };
 
 export function playerKey(team: "home" | "away", index: number): string {
@@ -52,6 +53,10 @@ function reducer(state: State, action: Action, total: number): State {
     }
     case "TICK":
       return { ...state, seconds: state.seconds + 1 };
+    case "GIVE_UP":
+      return state.status === "playing"
+        ? { ...state, status: "lost" }
+        : state;
     case "RESTORE":
       return { ...state, ...action.state };
     default:
@@ -70,6 +75,7 @@ export interface GameApi {
   total: number;
   isGuessed: (team: "home" | "away", index: number) => boolean;
   guess: (input: string) => "correct" | "wrong" | "duplicate";
+  giveUp: () => void;
 }
 
 export function useGameState(match: Match, persistKey?: string): GameApi {
@@ -194,6 +200,10 @@ export function useGameState(match: Match, persistKey?: string): GameApi {
     [state.guessed],
   );
 
+  const giveUp = useCallback(() => {
+    dispatch({ type: "GIVE_UP" });
+  }, []);
+
   return {
     status: state.status,
     lives: state.lives,
@@ -205,5 +215,6 @@ export function useGameState(match: Match, persistKey?: string): GameApi {
     total,
     isGuessed,
     guess,
+    giveUp,
   };
 }
