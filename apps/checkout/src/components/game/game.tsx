@@ -8,12 +8,14 @@ import { Odometer } from "@/components/game/odometer";
 import { Scoresheet } from "@/components/game/scoresheet";
 import { StrikeMeter } from "@/components/game/strike-meter";
 import { SubjectPicker } from "@/components/game/subject-picker";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   applyGuess,
   createGame,
   type GameState,
   type GuessEntry,
+  MAX_VISIT,
 } from "@/lib/game/engine";
 import type { Subject } from "@/lib/subjects";
 import { subjectCrestUrl } from "@/lib/subjects";
@@ -30,12 +32,26 @@ function callerLineFor(entry: GuessEntry, subject: Subject): CallerLine {
   const { player } = entry;
   switch (entry.status) {
     case "scored":
+      if (player.apps === MAX_VISIT) {
+        return {
+          tone: "scored",
+          text:
+            entry.scoreAfter === 0
+              ? `${player.name} — one hundred and eighty, and checkout!`
+              : `${player.name} — one hundred and eighty! ${entry.scoreAfter} left.`,
+        };
+      }
       return {
         tone: "scored",
         text:
           entry.scoreAfter === 0
             ? `${player.name} for ${player.apps}. Checkout!`
             : `${player.name}, ${player.apps} appearances. ${entry.scoreAfter} left.`,
+      };
+    case "over":
+      return {
+        tone: "strike",
+        text: `${player.name} has ${player.apps} for ${subject.shortName} — over the ${MAX_VISIT} ceiling. Burned.`,
       };
     case "bust":
       return {
@@ -57,6 +73,7 @@ function callerLineFor(entry: GuessEntry, subject: Subject): CallerLine {
 
 export function Game({ initialScore }: { initialScore: number }) {
   const [subject, setSubject] = useState<Subject | null>(null);
+  const [limit180, setLimit180] = useState(false);
   const [state, setState] = useState<GameState>(() => createGame(initialScore));
   const [caller, setCaller] = useState<CallerLine | null>(null);
   const [overlayVisible, setOverlayVisible] = useState(false);
@@ -76,7 +93,7 @@ export function Game({ initialScore }: { initialScore: number }) {
   }, [state.phase]);
 
   const resetRound = () => {
-    setState(createGame(initialScore));
+    setState(createGame(initialScore, limit180));
     setCaller(null);
   };
 
@@ -109,11 +126,19 @@ export function Game({ initialScore }: { initialScore: number }) {
   };
 
   if (!subject) {
-    return <SubjectPicker onPick={handlePick} />;
+    return (
+      <SubjectPicker
+        onPick={handlePick}
+        limit180={limit180}
+        onLimit180Change={setLimit180}
+      />
+    );
   }
 
   const lastEntry = state.guesses.at(-1);
   const shakeKey = state.guesses.length;
+  const hitMaximum =
+    lastEntry?.status === "scored" && lastEntry.player.apps === MAX_VISIT;
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-6">
@@ -130,6 +155,11 @@ export function Game({ initialScore }: { initialScore: number }) {
             className="size-7 object-contain"
           />
           <span className="text-sm font-medium">{subject.name}</span>
+          {state.limit180 && (
+            <Badge variant="outline" className="border-primary/50 text-primary">
+              {MAX_VISIT} max
+            </Badge>
+          )}
           <Button
             variant="ghost"
             size="xs"
@@ -196,6 +226,23 @@ export function Game({ initialScore }: { initialScore: number }) {
           <Scoresheet entries={state.guesses} />
         </section>
       </main>
+
+      {hitMaximum && (
+        <div
+          key={`max-${shakeKey}`}
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-40 flex items-center justify-center"
+        >
+          <div className="animate-one-eighty flex flex-col items-center gap-1">
+            <span className="font-display text-[7rem] leading-none tracking-wide text-primary drop-shadow-[0_0_40px_oklch(0.79_0.115_85/0.55)] sm:text-[11rem]">
+              180
+            </span>
+            <span className="font-marker text-xl text-primary sm:text-2xl">
+              one hundred and eightyyy!
+            </span>
+          </div>
+        </div>
+      )}
 
       {state.phase !== "playing" && overlayVisible && (
         <EndOverlay

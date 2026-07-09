@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import type { GuessEntry } from "@/lib/game/engine";
+import { type GuessEntry, MAX_VISIT } from "@/lib/game/engine";
 import { cn } from "@/lib/utils";
 
 function PlayerFace({
@@ -34,11 +34,29 @@ function EntryVerdict({ entry }: { entry: GuessEntry }) {
     case "scored":
       return (
         <span className="flex items-baseline gap-3">
-          <span className="font-display text-lg text-bed-green">
+          <span
+            className={cn(
+              "font-display text-lg",
+              entry.player.apps === MAX_VISIT
+                ? "text-primary"
+                : "text-bed-green",
+            )}
+          >
             −{entry.player.apps}
           </span>
           <span className="w-12 text-right font-display text-lg tabular-nums">
             {entry.scoreAfter}
+          </span>
+        </span>
+      );
+    case "over":
+      return (
+        <span className="flex items-baseline gap-3">
+          <span className="font-display text-lg text-muted-foreground line-through decoration-treble/70">
+            {entry.player.apps}
+          </span>
+          <span className="animate-stamp-in font-marker text-sm uppercase text-treble">
+            over {MAX_VISIT}
           </span>
         </span>
       );
