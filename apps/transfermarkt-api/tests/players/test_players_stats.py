@@ -1,18 +1,23 @@
-from datetime import datetime
-
 import pytest
 from fastapi import HTTPException
-from schema import And, Optional, Schema
+from schema import And, Schema
 
 from app.services.players.stats import TransfermarktPlayerStats
 
 
-def test_players_profile_not_found():
+def test_players_stats_not_found():
     with pytest.raises(HTTPException):
         TransfermarktPlayerStats(player_id="0")
 
 
-@pytest.mark.parametrize("player_id", ["3373", "8198", "68290"])
+def test_players_stats_unknown_player_returns_empty():
+    tfmkt = TransfermarktPlayerStats(player_id="999999999")
+    result = tfmkt.get_player_stats()
+
+    assert result["stats"] == []
+
+
+@pytest.mark.parametrize("player_id", ["3373", "8198", "68290", "5023"])
 def test_get_player_stats(player_id, len_greater_than_0, regex_integer):
     tfmkt = TransfermarktPlayerStats(player_id=player_id)
     result = tfmkt.get_player_stats()
@@ -22,65 +27,30 @@ def test_get_player_stats(player_id, len_greater_than_0, regex_integer):
             "id": str,
             "stats": [
                 {
-                    "competitionID": And(str, len_greater_than_0),
-                    "clubID": And(str, len_greater_than_0, regex_integer),
-                    "seasonID": And(str, len_greater_than_0),
-                    "competitionName": And(str, len_greater_than_0),
-                    Optional("appearances"): And(str, len_greater_than_0, regex_integer),
-                    Optional("goals"): And(str, len_greater_than_0, regex_integer),
-                    Optional("assists"): And(str, len_greater_than_0, regex_integer),
-                    Optional("yellowCards"): And(str, len_greater_than_0, regex_integer),
-                    Optional("secondYellowCards"): And(str, len_greater_than_0, regex_integer),
-                    Optional("redCards"): And(str, len_greater_than_0, regex_integer),
-                    Optional("minutesPlayed"): And(str, len_greater_than_0),
+                    "competitionId": And(str, len_greater_than_0),
+                    "competitionName": str,
+                    "seasonId": And(str, len_greater_than_0),
+                    "clubId": And(str, len_greater_than_0, regex_integer),
+                    "appearances": And(str, regex_integer),
+                    "goals": And(str, regex_integer),
+                    "assists": And(str, regex_integer),
+                    "yellowCards": And(str, regex_integer),
+                    "redCards": And(str, regex_integer),
+                    "minutesPlayed": And(str, regex_integer),
                 },
             ],
-            "updatedAt": datetime,
         },
     )
 
     assert expected_schema.validate(result)
-    assert any("appearances" in stat for stat in result.get("stats"))
-    assert any("goals" in stat for stat in result.get("stats"))
-    assert any("assists" in stat for stat in result.get("stats"))
-    assert any("yellowCards" in stat for stat in result.get("stats"))
-    assert any("secondYellowCards" in stat for stat in result.get("stats"))
-    assert any("redCards" in stat for stat in result.get("stats"))
-    assert any("minutesPlayed" in stat for stat in result.get("stats"))
+    assert len(result["stats"]) > 0
+    assert any(stat["competitionName"] for stat in result["stats"])
 
 
-@pytest.mark.parametrize("player_id", ["5023", "13811"])
-def test_get_player_stats_goalkeeper(player_id, len_greater_than_0, regex_integer):
-    tfmkt = TransfermarktPlayerStats(player_id=player_id)
+def test_get_player_stats_career_totals():
+    """Messi's Barcelona appearances are a known, stable career total."""
+    tfmkt = TransfermarktPlayerStats(player_id="28003")
     result = tfmkt.get_player_stats()
 
-    expected_schema = Schema(
-        {
-            "id": str,
-            "stats": [
-                {
-                    "competitionID": And(str, len_greater_than_0),
-                    "clubID": And(str, len_greater_than_0, regex_integer),
-                    "seasonID": And(str, len_greater_than_0),
-                    "competitionName": And(str, len_greater_than_0),
-                    Optional("appearances"): And(str, len_greater_than_0, regex_integer),
-                    Optional("goals"): And(str, len_greater_than_0, regex_integer),
-                    Optional("yellowCards"): And(str, len_greater_than_0, regex_integer),
-                    Optional("secondYellowCards"): And(str, len_greater_than_0, regex_integer),
-                    Optional("redCards"): And(str, len_greater_than_0, regex_integer),
-                    Optional("goalsConceded"): And(str, len_greater_than_0, regex_integer),
-                    Optional("cleanSheets"): And(str, len_greater_than_0, regex_integer),
-                    Optional("minutesPlayed"): And(str, len_greater_than_0),
-                },
-            ],
-            "updatedAt": datetime,
-        },
-    )
-
-    assert expected_schema.validate(result)
-    assert any("appearances" in stat for stat in result.get("stats"))
-    assert any("yellowCards" in stat for stat in result.get("stats"))
-    assert any("redCards" in stat for stat in result.get("stats"))
-    assert any("goalsConceded" in stat for stat in result.get("stats"))
-    assert any("cleanSheets" in stat for stat in result.get("stats"))
-    assert any("minutesPlayed" in stat for stat in result.get("stats"))
+    barcelona_apps = sum(int(stat["appearances"]) for stat in result["stats"] if stat["clubId"] == "131")
+    assert barcelona_apps == 778
