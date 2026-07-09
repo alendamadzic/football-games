@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { STARTING_SCORE } from "@/lib/game/engine";
+import { MAX_VISIT, STARTING_SCORE } from "@/lib/game/engine";
 import {
   SUBJECTS,
   type Subject,
@@ -64,8 +65,12 @@ function SubjectCard({
 
 export function SubjectPicker({
   onPick,
+  limit180,
+  onLimit180Change,
 }: {
   onPick: (subject: Subject) => void;
+  limit180: boolean;
+  onLimit180Change: (on: boolean) => void;
 }) {
   const [kind, setKind] = useState<SubjectKind>("club");
   const subjects = SUBJECTS.filter((subject) => subject.kind === kind);
@@ -92,6 +97,35 @@ export function SubjectPicker({
           <TabsTrigger value="nation">Nations</TabsTrigger>
         </TabsList>
       </Tabs>
+
+      <label
+        htmlFor="limit-180"
+        className={cn(
+          "flex w-full max-w-md items-center gap-3 rounded-lg border bg-card px-4 py-3",
+          "transition-colors duration-200",
+          limit180 && "border-primary/50",
+        )}
+      >
+        <Switch
+          id="limit-180"
+          checked={limit180}
+          onCheckedChange={onLimit180Change}
+        />
+        <span className="flex min-w-0 flex-col gap-0.5 text-left">
+          <span
+            className={cn(
+              "text-sm font-medium transition-colors duration-200",
+              limit180 && "text-primary",
+            )}
+          >
+            {MAX_VISIT} max
+          </span>
+          <span className="text-xs text-muted-foreground">
+            Real darts rules — naming anyone over {MAX_VISIT} appearances costs
+            a dart.
+          </span>
+        </span>
+      </label>
 
       <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {subjects.map((subject) => (

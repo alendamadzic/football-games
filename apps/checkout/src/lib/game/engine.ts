@@ -1,7 +1,9 @@
 export const STARTING_SCORE = 501;
 export const MAX_STRIKES = 3;
+/** Darts' maximum visit — the appearance ceiling when the 180 rule is on. */
+export const MAX_VISIT = 180;
 
-export type GuessStatus = "scored" | "bust" | "invalid" | "duplicate";
+export type GuessStatus = "scored" | "bust" | "invalid" | "duplicate" | "over";
 
 export type GamePhase = "playing" | "won" | "lost";
 
@@ -25,10 +27,21 @@ export interface GameState {
   score: number;
   strikes: number;
   guesses: GuessEntry[];
+  /** When on, any player with more than MAX_VISIT appearances is a strike. */
+  limit180: boolean;
 }
 
-export function createGame(startScore: number = STARTING_SCORE): GameState {
-  return { phase: "playing", score: startScore, strikes: 0, guesses: [] };
+export function createGame(
+  startScore: number = STARTING_SCORE,
+  limit180 = false,
+): GameState {
+  return {
+    phase: "playing",
+    score: startScore,
+    strikes: 0,
+    guesses: [],
+    limit180,
+  };
 }
 
 export function isPlayerUsed(state: GameState, playerId: string): boolean {
@@ -38,6 +51,7 @@ export function isPlayerUsed(state: GameState, playerId: string): boolean {
 function guessStatus(state: GameState, player: GuessedPlayer): GuessStatus {
   if (isPlayerUsed(state, player.playerId)) return "duplicate";
   if (player.apps === 0) return "invalid";
+  if (state.limit180 && player.apps > MAX_VISIT) return "over";
   if (player.apps > state.score) return "bust";
   return "scored";
 }
@@ -54,6 +68,7 @@ export function applyGuess(state: GameState, player: GuessedPlayer): GameState {
     scoreAfter === 0 ? "won" : strikes >= MAX_STRIKES ? "lost" : "playing";
 
   return {
+    ...state,
     phase,
     score: scoreAfter,
     strikes,
