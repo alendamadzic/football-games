@@ -22,19 +22,39 @@ class TransfermarktPlayerStats(TransfermarktBase):
     """
 
     player_id: str = None
-    URL: str = "https://www.transfermarkt.com/ceapi/performance-game/{player_id}"
+    URL: str = "https://tmapi.transfermarkt.technology/player/{player_id}/performance-game"
+    FALLBACK_URL: str = "https://www.transfermarkt.com/ceapi/performance-game/{player_id}"
     COMPETITIONS_URL: str = "https://tmapi.transfermarkt.technology/competitions"
 
     def __post_init__(self) -> None:
         """Initialize the TransfermarktPlayerStats class."""
         self.URL = self.URL.format(player_id=self.player_id)
-        try:
-            payload: dict = self.make_request().json()
-        except ValueError:
-            raise HTTPException(status_code=502, detail=f"Invalid JSON response (url: {self.URL})")
-        if not payload.get("success") or not isinstance(payload.get("data"), dict):
-            raise HTTPException(status_code=404, detail=f"Invalid request (url: {self.URL})")
-        self.data: dict = payload["data"]
+        self.FALLBACK_URL = self.FALLBACK_URL.format(player_id=self.player_id)
+        self.data: dict = self.__fetch_performance_data()
+
+    def __fetch_performance_data(self) -> dict:
+        """
+        Fetch the per-match performance JSON, preferring the data API and falling
+        back to the website endpoint that proxies it (each occasionally rejects
+        requests the other serves).
+
+        Returns:
+            dict: The performance-game data payload.
+        """
+        last_error: HTTPException = None
+        for url in (self.URL, self.FALLBACK_URL):
+            try:
+                payload: dict = self.make_request(url).json()
+            except ValueError:
+                last_error = HTTPException(status_code=502, detail=f"Invalid JSON response (url: {url})")
+                continue
+            except HTTPException as error:
+                last_error = error
+                continue
+            if payload.get("success") and isinstance(payload.get("data"), dict):
+                return payload["data"]
+            last_error = HTTPException(status_code=404, detail=f"Invalid request (url: {url})")
+        raise last_error
 
     def __resolve_competition_names(self, competition_ids: list) -> dict:
         """
