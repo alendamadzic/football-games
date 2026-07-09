@@ -1,3 +1,20 @@
+[project]
+name = "transfermarkt-api"
+version = "3.0.0"
+description = "API service to get data from Transfermarkt"
+requires-python = ">=3.9,<4.0"
+dependencies = [
+    "lxml==5.3.0",
+    "beautifulsoup4==4.12.3",
+    "requests==2.32.3",
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.34.0",
+    "slowapi==0.1.9",
+    "pydantic-settings==2.7.1",
+    "pydantic==2.10.4",
+    "python-dateutil==2.9.0.post0",
+]
+
 [tool.poetry]
 name = "transfermarkt-api"
 version = "3.0.0"
