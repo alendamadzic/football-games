@@ -76,6 +76,9 @@ export function Game({ initialScore }: { initialScore: number }) {
   const [limit180, setLimit180] = useState(false);
   const [state, setState] = useState<GameState>(() => createGame(initialScore));
   const [caller, setCaller] = useState<CallerLine | null>(null);
+  const [pendingGuess, setPendingGuess] = useState<PlayerSearchItem | null>(
+    null,
+  );
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [isChecking, startChecking] = useTransition();
 
@@ -95,6 +98,7 @@ export function Game({ initialScore }: { initialScore: number }) {
   const resetRound = () => {
     setState(createGame(initialScore, limit180));
     setCaller(null);
+    setPendingGuess(null);
   };
 
   const handlePick = (picked: Subject) => {
@@ -104,24 +108,29 @@ export function Game({ initialScore }: { initialScore: number }) {
 
   const handleGuess = (item: PlayerSearchItem) => {
     if (!subject || state.phase !== "playing") return;
+    setPendingGuess(item);
     startChecking(async () => {
-      const result = await resolveGuess(item.playerId, subject.id);
-      if (!result.ok) {
-        setCaller({
-          tone: "warn",
-          text: "Couldn't verify that one — no strike, throw again.",
+      try {
+        const result = await resolveGuess(item.playerId, subject.id);
+        if (!result.ok) {
+          setCaller({
+            tone: "warn",
+            text: "Couldn't verify that one — no strike, throw again.",
+          });
+          return;
+        }
+        const next = applyGuess(state, {
+          playerId: item.playerId,
+          name: result.name || item.name,
+          imageUrl: result.imageUrl,
+          apps: result.apps,
         });
-        return;
+        setState(next);
+        const entry = next.guesses.at(-1);
+        if (entry) setCaller(callerLineFor(entry, subject));
+      } finally {
+        setPendingGuess(null);
       }
-      const next = applyGuess(state, {
-        playerId: item.playerId,
-        name: result.name || item.name,
-        imageUrl: result.imageUrl,
-        apps: result.apps,
-      });
-      setState(next);
-      const entry = next.guesses.at(-1);
-      if (entry) setCaller(callerLineFor(entry, subject));
     });
   };
 
@@ -207,23 +216,24 @@ export function Game({ initialScore }: { initialScore: number }) {
               aria-live="polite"
               className={cn(
                 "min-h-10 text-balance px-1 text-center text-sm",
-                isChecking && "animate-board-flicker text-muted-foreground",
+                isChecking && "text-muted-foreground/50",
                 !isChecking && caller?.tone === "scored" && "text-bed-green",
                 !isChecking && caller?.tone === "strike" && "text-treble",
                 !isChecking && caller?.tone === "warn" && "text-primary",
                 !isChecking && !caller && "text-muted-foreground",
               )}
             >
-              {isChecking
-                ? "VAR check…"
-                : (caller?.text ??
-                  "Every appearance for the badge counts down. Find the route to zero.")}
+              {caller?.text ??
+                "Every appearance for the badge counts down. Find the route to zero."}
             </p>
           </div>
         </section>
 
         <section className="flex flex-col gap-3">
-          <Scoresheet entries={state.guesses} />
+          <Scoresheet
+            entries={state.guesses}
+            pending={isChecking ? pendingGuess : null}
+          />
         </section>
       </main>
 
