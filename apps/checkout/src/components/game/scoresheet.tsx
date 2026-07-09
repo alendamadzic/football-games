@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { type GuessEntry, MAX_VISIT } from "@/lib/game/engine";
+import type { PlayerSearchItem } from "@/lib/tm/types";
 import { cn } from "@/lib/utils";
 
 function PlayerFace({
@@ -86,8 +87,14 @@ function EntryVerdict({ entry }: { entry: GuessEntry }) {
   }
 }
 
-export function Scoresheet({ entries }: { entries: GuessEntry[] }) {
-  if (entries.length === 0) {
+export function Scoresheet({
+  entries,
+  pending,
+}: {
+  entries: GuessEntry[];
+  pending?: PlayerSearchItem | null;
+}) {
+  if (entries.length === 0 && !pending) {
     return (
       <div className="rounded-lg border border-dashed px-4 py-8 text-center text-sm text-muted-foreground">
         The sheet is clean. First name gets chalked up here.
@@ -107,6 +114,24 @@ export function Scoresheet({ entries }: { entries: GuessEntry[] }) {
         </span>
       </div>
       <ul>
+        {pending && (
+          <li
+            className={cn(
+              "flex items-center justify-between gap-3 px-4 py-2.5",
+              newestFirst.length > 0 && "border-b border-border/60",
+            )}
+          >
+            <span className="flex min-w-0 items-center gap-3">
+              <PlayerFace name={pending.name} imageUrl={null} />
+              <span className="truncate text-sm font-medium">
+                {pending.name}
+              </span>
+            </span>
+            <span className="animate-board-flicker font-marker text-sm uppercase text-primary">
+              VAR check…
+            </span>
+          </li>
+        )}
         {newestFirst.map((entry, index) => (
           <li
             key={`visit-${newestFirst.length - index}`}
