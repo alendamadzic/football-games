@@ -11,10 +11,10 @@ import { internal } from "./_generated/api";
 import type { Doc, Id } from "./_generated/dataModel";
 import {
   internalMutation,
-  mutation,
   type MutationCtx,
-  query,
+  mutation,
   type QueryCtx,
+  query,
 } from "./_generated/server";
 import { guessedPlayer, subject } from "./schema";
 
@@ -185,7 +185,8 @@ export const updateSettings = mutation({
   handler: async (ctx, args) => {
     const room = await requireRoom(ctx, args.code);
     requireHost(room, args.deviceId);
-    if (room.state !== null) throw new Error("Settings lock once the game starts");
+    if (room.state !== null)
+      throw new Error("Settings lock once the game starts");
 
     const patch: Partial<Doc<"rooms">> = { updatedAt: Date.now() };
     if (args.turnSeconds !== undefined) {
@@ -229,7 +230,11 @@ export const startGame = mutation({
       room.startScore,
       room.limit180,
     );
-    const armed = { _id: room._id, turnSeconds: room.turnSeconds, turnCount: 1 };
+    const armed = {
+      _id: room._id,
+      turnSeconds: room.turnSeconds,
+      turnCount: 1,
+    };
     await ctx.db.patch("rooms", room._id, {
       state,
       seatDeviceIds: room.members.map((member) => member.deviceId),
@@ -246,7 +251,8 @@ export const submitGuess = mutation({
   handler: async (ctx, args) => {
     const room = await requireRoom(ctx, args.code);
     const state = room.state;
-    if (!state || state.phase !== "playing") throw new Error("No game underway");
+    if (!state || state.phase !== "playing")
+      throw new Error("No game underway");
     if (room.seatDeviceIds[state.activeIndex] !== args.deviceId) {
       throw new Error("Not your throw");
     }
@@ -268,7 +274,8 @@ export const submitGuess = mutation({
     await ctx.db.patch("rooms", room._id, {
       state: next,
       turnCount,
-      turnDeadline: next.phase === "playing" ? await armShotClock(ctx, armed) : null,
+      turnDeadline:
+        next.phase === "playing" ? await armShotClock(ctx, armed) : null,
       updatedAt: Date.now(),
     });
     return null;
@@ -304,7 +311,8 @@ export const forfeitExpiredTurn = internalMutation({
     await ctx.db.patch("rooms", room._id, {
       state: next,
       turnCount,
-      turnDeadline: next.phase === "playing" ? await armShotClock(ctx, armed) : null,
+      turnDeadline:
+        next.phase === "playing" ? await armShotClock(ctx, armed) : null,
       updatedAt: Date.now(),
     });
     return null;

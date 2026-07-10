@@ -6,6 +6,7 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
+import { ConvexClientProvider } from "@/components/convex-provider";
 import { cn } from "@/lib/utils";
 
 const spaceGrotesk = Space_Grotesk({
@@ -52,7 +53,9 @@ export default function RootLayout({
         geistMono.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ConvexClientProvider>{children}</ConvexClientProvider>
+      </body>
     </html>
   );
 }

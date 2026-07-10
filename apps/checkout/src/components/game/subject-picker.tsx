@@ -67,26 +67,36 @@ export function SubjectPicker({
   onPick,
   limit180,
   onLimit180Change,
+  embedded = false,
 }: {
   onPick: (subject: Subject) => void;
   limit180: boolean;
   onLimit180Change: (on: boolean) => void;
+  /** Skip the full-page header when rendered inside a dialog. */
+  embedded?: boolean;
 }) {
   const [kind, setKind] = useState<SubjectKind>("club");
   const subjects = SUBJECTS.filter((subject) => subject.kind === kind);
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4 py-10 sm:py-16">
-      <header className="flex flex-col items-center gap-4 text-center">
-        <h1 className="font-display text-6xl leading-none tracking-wide sm:text-7xl">
-          checkout<span className="text-primary">.</span>
-        </h1>
-        <p className="max-w-md text-balance text-muted-foreground">
-          Football&apos;s {STARTING_SCORE}. Pick a badge, name players who wore
-          it — every appearance counts down. Land on exactly zero. Three wayward
-          darts and you&apos;re out.
-        </p>
-      </header>
+    <div
+      className={cn(
+        "mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-4",
+        !embedded && "py-10 sm:py-16",
+      )}
+    >
+      {!embedded && (
+        <header className="flex flex-col items-center gap-4 text-center">
+          <h1 className="font-display text-6xl leading-none tracking-wide sm:text-7xl">
+            checkout<span className="text-primary">.</span>
+          </h1>
+          <p className="max-w-md text-balance text-muted-foreground">
+            Football&apos;s {STARTING_SCORE}. Pick a badge, name players who
+            wore it — every appearance counts down. Land on exactly zero. Three
+            wayward darts and you&apos;re out.
+          </p>
+        </header>
+      )}
 
       <Tabs
         value={kind}
@@ -133,9 +143,11 @@ export function SubjectPicker({
         ))}
       </div>
 
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-        pick a board · game on
-      </p>
+      {!embedded && (
+        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+          pick a board · game on
+        </p>
+      )}
     </div>
   );
 }
