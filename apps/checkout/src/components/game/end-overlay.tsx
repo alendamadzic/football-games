@@ -12,7 +12,7 @@ const CONFETTI_COLORS = [
   "bg-treble",
 ];
 
-function Confetti() {
+export function Confetti() {
   return (
     <div
       className="pointer-events-none absolute inset-0 overflow-hidden"
