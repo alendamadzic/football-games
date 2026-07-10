@@ -76,6 +76,12 @@ export function MultiGameBoard() {
           imageUrl: result.imageUrl,
           apps: result.apps,
         });
+      } catch {
+        // Most likely the shot clock forfeited the turn mid-lookup.
+        setCaller({
+          tone: "warn",
+          text: "That dart didn't land — the clock may have beaten you.",
+        });
       } finally {
         setPendingGuess(null);
       }
