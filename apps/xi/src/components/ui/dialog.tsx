@@ -53,7 +53,13 @@ function DialogContent({
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-6 rounded-none bg-popover p-6 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-md data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          // Bottom sheet on phones, centred dialog from sm up. The max-height
+          // and scroll matter at every size — without them a tall dialog clips
+          // off both ends on a short screen.
+          "fixed inset-x-0 bottom-0 z-50 grid max-h-[85dvh] w-full gap-6 overflow-y-auto overscroll-contain rounded-t-xl bg-popover p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none",
+          "data-open:animate-in data-open:fade-in-0 data-open:slide-in-from-bottom-4 data-closed:animate-out data-closed:fade-out-0 data-closed:slide-out-to-bottom-4",
+          "sm:inset-x-auto sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:max-h-[calc(100dvh-4rem)] sm:max-w-md sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-none sm:pb-6",
+          "sm:data-open:zoom-in-95 sm:data-open:slide-in-from-bottom-0 sm:data-closed:zoom-out-95 sm:data-closed:slide-out-to-bottom-0",
           className
         )}
         {...props}
@@ -65,7 +71,7 @@ function DialogContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-5 right-5 bg-secondary"
+                className="absolute top-4 right-4 size-11 bg-secondary"
                 size="icon-sm"
               />
             }

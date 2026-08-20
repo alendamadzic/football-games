@@ -1,15 +1,19 @@
 "use client";
 
 import { type KeyboardEvent, useEffect, useRef, useState } from "react";
-import type { Match } from "@/lib/types";
 
 export type GuessResult = "correct" | "wrong" | "duplicate";
 
-async function fetchSuggestions(query: string): Promise<string[]> {
+async function fetchSuggestions(
+  query: string,
+  limit: number,
+  signal: AbortSignal,
+): Promise<string[] | null> {
   if (query.length < 2) return [];
   try {
     const res = await fetch(
       `/api/players/search?q=${encodeURIComponent(query)}`,
+      { signal },
     );
     if (!res.ok) return [];
     const data = (await res.json()) as {
@@ -18,19 +22,20 @@ async function fetchSuggestions(query: string): Promise<string[]> {
     return (data.results ?? [])
       .map((r) => r.name ?? "")
       .filter(Boolean)
-      .slice(0, 6);
+      .slice(0, limit);
   } catch {
-    return [];
+    // `null` means "superseded or failed" — leave the current list alone
+    // rather than blanking it, which on a flaky mobile connection reads as
+    // the autocomplete breaking.
+    return signal.aborted ? null : [];
   }
 }
 
-// Headless logic for the "type a name" guess field, shared across every design
-// so each one only has to render its own markup. Manages the input value,
-// debounced autocomplete, keyboard navigation and a transient feedback flash.
+// Headless logic for the "type a name" guess field: input value, debounced
+// autocomplete, keyboard navigation and a transient feedback flash.
 export function useGuessField(
-  match: Match,
-  guessed: Set<string>,
   onGuess: (input: string) => GuessResult,
+  { limit = 6 }: { limit?: number } = {},
 ) {
   const [value, setValue] = useState("");
   const [highlight, setHighlight] = useState(0);
@@ -48,15 +53,21 @@ export function useGuessField(
     }
     debounceRef.current = setTimeout(async () => {
       if (abortRef.current) abortRef.current.abort();
-      abortRef.current = new AbortController();
-      const results = await fetchSuggestions(value.trim());
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const results = await fetchSuggestions(
+        value.trim(),
+        limit,
+        controller.signal,
+      );
+      if (results === null) return; // a newer keystroke took over
       setSuggestions(results);
       setHighlight(0);
     }, 250);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [value]);
+  }, [value, limit]);
 
   function submit(raw: string): GuessResult | undefined {
     const input = raw.trim();
