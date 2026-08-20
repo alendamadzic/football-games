@@ -149,6 +149,25 @@
   animation: xi-shine 3.5s ease-in-out infinite;
 }
 
+/* HUD counter pulse when the score changes. */
+@keyframes xi-pop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.animate-pop {
+  animation: xi-pop 0.26s ease-out;
+}
+
+/* Reveal card rising out of the guess dock. */
+@keyframes xi-rise {
+  0% { transform: translateY(0.75rem); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.animate-rise {
+  animation: xi-rise 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
+}
+
 /* Retro CMYK mis-registration on the album cover title. */
 .print-offset {
   text-shadow:
@@ -174,5 +193,43 @@
   }
   html {
     @apply font-sans;
+    /* Stop iOS inflating type when a phone is rotated to landscape. */
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    /* The guess dock is fixed to the bottom; without this the page rubber-bands
+       behind it on iOS and the dock appears to detach. */
+    overscroll-behavior-y: none;
+  }
+  button,
+  [role="button"],
+  a,
+  input,
+  label,
+  summary {
+    /* Kills the 300ms tap delay and the grey flash on touch. */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Respect the OS setting — keep the feedback, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slap,
+  .animate-rise {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .animate-shine {
+    animation: none;
+    opacity: 0;
+  }
+  .animate-shake,
+  .animate-pop {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }
