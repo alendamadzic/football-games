@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { Input } from "@football/ui/components/input";
+import { Label } from "@football/ui/components/label";
 import { useMutation, useQuery } from "convex/react";
 import {
   Check,
@@ -15,9 +18,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { GameScreen } from "@/components/game/game-screen";
 import { OnlineGameProvider } from "@/components/game/online-game-provider";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDeviceId } from "@/hooks/use-device-id";
 import {
   MAJOR_NATION_NAMES,

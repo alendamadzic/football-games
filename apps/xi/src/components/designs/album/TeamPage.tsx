@@ -1,11 +1,11 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useId, useState } from "react";
 import type { GameApi } from "@/hooks/useGameState";
 import { formationLabel } from "@/lib/formation";
 import type { Match } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { Sticker } from "./Sticker";
 import type { Side } from "./shared";
 

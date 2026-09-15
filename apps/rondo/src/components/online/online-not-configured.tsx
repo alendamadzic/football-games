@@ -1,6 +1,6 @@
+import { Button } from "@football/ui/components/button";
 import { Terminal } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 /**
  * Shown when NEXT_PUBLIC_CONVEX_URL is missing. Online mode needs a linked

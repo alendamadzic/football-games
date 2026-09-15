@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
 import { Flag, Loader2, SkipForward } from "lucide-react";
 import { useCallback } from "react";
-import { Button } from "@/components/ui/button";
 import { useCountdown } from "@/hooks/use-countdown";
 import {
   getDynamicSeconds,

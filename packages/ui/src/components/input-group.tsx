@@ -1,11 +1,11 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { Input } from "@football/ui/components/input";
+import { Textarea } from "@football/ui/components/textarea";
+import { cn } from "@football/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
 
 function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (

@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
 import { Home, RotateCcw, Share2, Trophy } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { getNationEntry, getPositionEntry } from "@/lib/game/difficulty";
 import { generateShareImage } from "@/lib/game/share-image";
 import type { GameConfig, GameState } from "@/lib/game/types";

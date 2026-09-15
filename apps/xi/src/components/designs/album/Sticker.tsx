@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { Star } from "lucide-react";
 import { nationalityFlag } from "@/lib/nationality";
 import type { Player } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { FOIL, ROT } from "./shared";
 
 /**

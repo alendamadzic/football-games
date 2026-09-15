@@ -1,11 +1,11 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { Shield } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ChainLink } from "@/lib/game/types";
 import { getJerseyNumberAction } from "@/lib/tm/actions";
-import { cn } from "@/lib/utils";
 
 function ClubCard({
   link,

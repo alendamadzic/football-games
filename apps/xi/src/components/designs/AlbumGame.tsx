@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { cn } from "@football/ui/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Masthead } from "@/components/designs/album/Masthead";
 import { StickerBar } from "@/components/designs/album/StickerBar";
@@ -12,7 +14,6 @@ import {
   scrollStickerIntoBand,
 } from "@/components/designs/album/shared";
 import { TeamPage } from "@/components/designs/album/TeamPage";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +30,6 @@ import { useIsDesktop, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
 import { todayUTC } from "@/lib/format";
 import { fetchPlayerPhotos } from "@/lib/transfermarkt";
 import type { Match } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 const convexConfigured = Boolean(process.env.NEXT_PUBLIC_CONVEX_URL);
 

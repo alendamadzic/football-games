@@ -1,12 +1,12 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { useEffect, useId } from "react";
 import { useDockHeight } from "@/hooks/useDockHeight";
 import type { GameApi } from "@/hooks/useGameState";
 import { useGuessField } from "@/hooks/useGuessField";
 import { useVisualViewport } from "@/hooks/useVisualViewport";
 import type { Match } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { CollectedFlash } from "./CollectedFlash";
 
 export function StickerBar({

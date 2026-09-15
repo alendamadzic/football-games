@@ -1,16 +1,16 @@
 "use client";
 
-import { Flag, HelpCircle, MoreVertical } from "lucide-react";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@football/ui/components/dropdown-menu";
+import { cn } from "@football/ui/lib/utils";
+import { Flag, HelpCircle, MoreVertical } from "lucide-react";
+import Link from "next/link";
 import type { GameApi } from "@/hooks/useGameState";
 import { formatTime } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
 /**
  * Score, progress, lives and clock, pinned to the top. On a phone with the

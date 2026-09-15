@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Logo } from "./Logo";
 
 export function SimpleHeader() {

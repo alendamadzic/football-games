@@ -1,16 +1,16 @@
 "use client";
 
-import { Loader2, Search, Shield, Shirt } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import {
   Command,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@football/ui/components/command";
+import { Loader2, Search, Shield, Shirt } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 import { useDebouncedValue } from "@/hooks/use-debounce";
 import { normalizePosition, resolveNationality } from "@/lib/game/difficulty";
 import { referenceClub, referencePlayer } from "@/lib/game/reducer";

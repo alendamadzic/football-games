@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { Star } from "lucide-react";
 import type { GameApi } from "@/hooks/useGameState";
 import type { Match } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 /**
  * Pure album cover. Score, lives and clock used to live here and scroll away

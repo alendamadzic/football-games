@@ -1,7 +1,6 @@
 "use client";
 
-import { HeartCrack, Skull } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@football/ui/components/button";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +8,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@football/ui/components/dialog";
+import { HeartCrack, Skull } from "lucide-react";
 import type { EliminationInfo } from "@/lib/game/types";
 import { useGame } from "./game-provider";
 

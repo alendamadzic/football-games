@@ -1,5 +1,5 @@
+import { cn } from "@football/ui/lib/utils";
 import { Timer } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 function format(seconds: number): string {
   const m = Math.floor(seconds / 60);

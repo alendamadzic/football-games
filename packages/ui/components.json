@@ -5,7 +5,7 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/app/globals.css",
+    "css": "src/styles/globals.css",
     "baseColor": "zinc",
     "cssVariables": true,
     "prefix": ""
@@ -13,13 +13,13 @@
   "iconLibrary": "lucide",
   "rtl": false,
   "aliases": {
-    "components": "@/components",
+    "components": "@football/ui/components",
     "utils": "@football/ui/lib/utils",
     "ui": "@football/ui/components",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "lib": "@football/ui/lib",
+    "hooks": "@football/ui/hooks"
   },
-  "menuColor": "default",
+  "menuColor": "default-translucent",
   "menuAccent": "subtle",
   "registries": {}
 }

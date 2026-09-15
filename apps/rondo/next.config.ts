@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   // used by the Transfermarkt data layer (see src/lib/tm/client.ts).
   cacheComponents: true,
   reactCompiler: true,
-  transpilePackages: ["@football/transfermarkt"],
+  transpilePackages: ["@football/transfermarkt", "@football/ui"],
 };
 
 export default nextConfig;

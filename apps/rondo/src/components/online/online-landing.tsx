@@ -1,12 +1,12 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { Input } from "@football/ui/components/input";
+import { Label } from "@football/ui/components/label";
 import { useMutation } from "convex/react";
 import { Loader2, LogIn, Plus, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useDeviceId } from "@/hooks/use-device-id";
 import { api } from "../../../convex/_generated/api";
 

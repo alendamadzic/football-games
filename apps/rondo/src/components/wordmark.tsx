@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@football/ui/lib/utils";
 
 const SIZES = {
   sm: "text-2xl",

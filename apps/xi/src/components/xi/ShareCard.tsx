@@ -1,8 +1,8 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
 import { Check, Copy, Download, Share2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { formatTime } from "@/lib/format";
 import { buildShareText, type ShareData } from "@/lib/share";
 

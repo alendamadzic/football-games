@@ -1,10 +1,10 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { useEffect, useState } from "react";
 import type { GuessEvent } from "@/hooks/useGameState";
 import { nationalityFlag } from "@/lib/nationality";
 import type { Match } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { resolvePlayer } from "./shared";
 
 const DWELL_MS = 1800;

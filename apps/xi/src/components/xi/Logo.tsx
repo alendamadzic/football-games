@@ -1,5 +1,5 @@
+import { cn } from "@football/ui/lib/utils";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 // The brand "xi." — the full stop is a deliberate design element (in primary).
 export function Logo({ className }: { className?: string }) {

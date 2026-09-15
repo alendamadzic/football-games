@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Geist_Mono, Oxanium } from "next/font/google";
 import "./globals.css";
+import { cn } from "@football/ui/lib/utils";
 import { ConvexClientProvider } from "@/components/convex-provider";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { Toaster } from "@/components/ui/sonner";
-import { cn } from "@/lib/utils";
 
 // Oxanium drives the UI; Anton is the heavy condensed wordmark/display face;
 // Geist Mono powers timers and scores.

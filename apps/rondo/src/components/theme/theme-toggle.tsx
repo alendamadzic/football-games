@@ -1,7 +1,7 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
 import { Monitor, Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { type ThemePreference, useTheme } from "./theme-provider";
 
 const LABEL: Record<ThemePreference, string> = {

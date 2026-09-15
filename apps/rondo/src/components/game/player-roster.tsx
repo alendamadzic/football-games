@@ -1,6 +1,6 @@
+import { cn } from "@football/ui/lib/utils";
 import { Heart } from "lucide-react";
 import type { GamePlayer } from "@/lib/game/types";
-import { cn } from "@/lib/utils";
 
 export function PlayerRoster({
   players,
