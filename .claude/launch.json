@@ -1,0 +1,29 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "checkout",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "dev", "--filter", "checkout"],
+      "port": 3000
+    },
+    {
+      "name": "rondo",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "dev", "--filter", "rondo"],
+      "port": 3001
+    },
+    {
+      "name": "xi",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "dev", "--filter", "xi"],
+      "port": 3002
+    },
+    {
+      "name": "transfermarkt-api",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": ["run", "dev", "--filter", "transfermarkt-api"],
+      "port": 8000
+    }
+  ]
+}
