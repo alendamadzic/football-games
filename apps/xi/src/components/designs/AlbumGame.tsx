@@ -77,7 +77,7 @@ export function AlbumGame({ match }: { match: Match }) {
   // on the next frame once the panel has started expanding.
   const event = game.lastEvent;
   useEffect(() => {
-    if (!event || event.kind !== "correct") return;
+    if (event?.kind !== "correct") return;
     const key = event.keys[0];
     if (!key) return;
     const side = key.split("-")[0];

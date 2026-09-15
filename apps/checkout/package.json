@@ -15,7 +15,7 @@
     "convex": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
-    "radix-ui": "^1.6.2",
+    "radix-ui": "^1.6.7",
     "react": "catalog:",
     "react-dom": "catalog:",
     "server-only": "^0.0.1",

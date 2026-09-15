@@ -54,6 +54,7 @@ export function Odometer({
     >
       {digits.map((digit, index) => (
         <DigitColumn
+          // biome-ignore lint/suspicious/noArrayIndexKey: fixed-width digit columns derived from a number each render; position is the identity.
           key={`col-${digits.length - index}`}
           digit={digit}
           ghost={index < firstLit}

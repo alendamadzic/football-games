@@ -251,8 +251,7 @@ export const submitGuess = mutation({
   handler: async (ctx, args) => {
     const room = await requireRoom(ctx, args.code);
     const state = room.state;
-    if (!state || state.phase !== "playing")
-      throw new Error("No game underway");
+    if (state?.phase !== "playing") throw new Error("No game underway");
     if (room.seatDeviceIds[state.activeIndex] !== args.deviceId) {
       throw new Error("Not your throw");
     }
@@ -302,7 +301,7 @@ export const forfeitExpiredTurn = internalMutation({
   handler: async (ctx, args) => {
     const room = await ctx.db.get("rooms", args.roomId);
     // Stale job: the room is gone, the game ended, or a move already landed.
-    if (!room || !room.state || room.state.phase !== "playing") return null;
+    if (room?.state?.phase !== "playing") return null;
     if (room.turnCount !== args.expectedTurnCount) return null;
 
     const next = applyTurn(room.state, { type: "timeout" });

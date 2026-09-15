@@ -19,6 +19,9 @@
     },
     "test": {
       "dependsOn": ["^build"]
+    },
+    "transfermarkt-api#build": {
+      "outputs": [".venv/**"]
     }
   }
 }
