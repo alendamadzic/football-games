@@ -1,13 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
 
-const BASE = process.env.NEXT_PUBLIC_TRANSFERMARKT_API_URL;
+const BASE =
+  process.env.TM_API_URL ?? "https://transfermarkt-api-xi.vercel.app";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q");
   if (!query || query.length < 2) {
-    return NextResponse.json({ results: [] });
-  }
-  if (!BASE) {
     return NextResponse.json({ results: [] });
   }
   try {

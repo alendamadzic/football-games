@@ -11,7 +11,8 @@ import type {
   TmTransfersResponse,
 } from "./types";
 
-const BASE = "https://transfermarkt-api-xi.vercel.app";
+const BASE =
+  process.env.TM_API_URL ?? "https://transfermarkt-api-xi.vercel.app";
 
 export { normalizeClubName };
 
