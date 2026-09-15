@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import Image from "next/image";
 import {
   type GuessedPlayer,
@@ -7,7 +8,6 @@ import {
   type TurnStatus,
 } from "@/lib/game/engine";
 import type { PlayerSearchItem } from "@/lib/tm/types";
-import { cn } from "@/lib/utils";
 
 /**
  * One chalked line on the sheet. Solo passes its GuessEntry[] straight in;

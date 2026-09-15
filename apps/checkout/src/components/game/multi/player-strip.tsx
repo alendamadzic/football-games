@@ -1,7 +1,7 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { MAX_STRIKES, type MultiPlayer } from "@/lib/game/engine";
-import { cn } from "@/lib/utils";
 
 /**
  * The pub scoreboard: one chalk column per player — name, remaining score,

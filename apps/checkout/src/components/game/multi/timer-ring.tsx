@@ -1,7 +1,7 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { useCountdown } from "@/hooks/use-countdown";
-import { cn } from "@/lib/utils";
 
 const RADIUS = 15.5;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;

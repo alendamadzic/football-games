@@ -1,8 +1,8 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { useMultiGame } from "@/components/game/multi/game-context";
 import { TimerRing } from "@/components/game/multi/timer-ring";
-import { cn } from "@/lib/utils";
 
 /** Whose throw it is — and the shot clock, when one is running. */
 export function TurnBanner() {

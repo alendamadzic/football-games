@@ -1,6 +1,6 @@
+import { cn } from "@football/ui/lib/utils";
 import Link from "next/link";
 import { STARTING_SCORE } from "@/lib/game/engine";
-import { cn } from "@/lib/utils";
 
 const MODES = [
   {

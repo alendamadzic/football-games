@@ -1,9 +1,10 @@
 "use client";
 
+import { Switch } from "@football/ui/components/switch";
+import { Tabs, TabsList, TabsTrigger } from "@football/ui/components/tabs";
+import { cn } from "@football/ui/lib/utils";
 import Image from "next/image";
 import { useState } from "react";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MAX_VISIT, STARTING_SCORE } from "@/lib/game/engine";
 import {
   SUBJECTS,
@@ -11,7 +12,6 @@ import {
   type SubjectKind,
   subjectCrestUrl,
 } from "@/lib/subjects";
-import { cn } from "@/lib/utils";
 
 const TIER_LABELS: Record<Subject["tier"], string> = {
   1: "generous board",

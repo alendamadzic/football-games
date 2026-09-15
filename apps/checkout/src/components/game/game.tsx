@@ -1,5 +1,8 @@
 "use client";
 
+import { Badge } from "@football/ui/components/badge";
+import { Button } from "@football/ui/components/button";
+import { cn } from "@football/ui/lib/utils";
 import Image from "next/image";
 import { useEffect, useState, useTransition } from "react";
 import { EndOverlay } from "@/components/game/end-overlay";
@@ -8,8 +11,6 @@ import { Odometer } from "@/components/game/odometer";
 import { Scoresheet } from "@/components/game/scoresheet";
 import { StrikeMeter } from "@/components/game/strike-meter";
 import { SubjectPicker } from "@/components/game/subject-picker";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { type CallerLine, callerLineFor } from "@/lib/game/caller";
 import {
   applyGuess,
@@ -21,7 +22,6 @@ import type { Subject } from "@/lib/subjects";
 import { subjectCrestUrl } from "@/lib/subjects";
 import { resolveGuess } from "@/lib/tm/actions";
 import type { PlayerSearchItem } from "@/lib/tm/types";
-import { cn } from "@/lib/utils";
 
 export function Game({ initialScore }: { initialScore: number }) {
   const [subject, setSubject] = useState<Subject | null>(null);

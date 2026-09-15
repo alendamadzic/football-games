@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { cn } from "@football/ui/lib/utils";
 import { Confetti } from "@/components/game/end-overlay";
 import { useMultiGame } from "@/components/game/multi/game-context";
-import { Button } from "@/components/ui/button";
 import { placings } from "@/lib/game/engine";
-import { cn } from "@/lib/utils";
 
 const PLACE_LABELS = ["1st", "2nd", "3rd", "4th", "5th", "6th"];
 

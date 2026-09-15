@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { Input } from "@football/ui/components/input";
 import { useMutation } from "convex/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useDeviceId } from "@/hooks/use-device-id";
 import { api } from "../../../convex/_generated/api";
 

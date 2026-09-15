@@ -6,8 +6,8 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
+import { cn } from "@football/ui/lib/utils";
 import { ConvexClientProvider } from "@/components/convex-provider";
-import { cn } from "@/lib/utils";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],

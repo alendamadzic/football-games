@@ -1,17 +1,17 @@
 "use client";
 
-import { LoaderCircleIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
 import {
   Command,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "@football/ui/components/command";
+import { cn } from "@football/ui/lib/utils";
+import { LoaderCircleIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { searchPlayers } from "@/lib/tm/actions";
 import type { PlayerSearchItem } from "@/lib/tm/types";
-import { cn } from "@/lib/utils";
 
 interface GuessInputProps {
   subjectName: string;

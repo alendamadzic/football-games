@@ -1,5 +1,7 @@
 "use client";
 
+import { Badge } from "@football/ui/components/badge";
+import { cn } from "@football/ui/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
@@ -11,13 +13,11 @@ import { TurnBanner } from "@/components/game/multi/turn-banner";
 import { Odometer } from "@/components/game/odometer";
 import { Scoresheet, type ScoresheetRow } from "@/components/game/scoresheet";
 import { StrikeMeter } from "@/components/game/strike-meter";
-import { Badge } from "@/components/ui/badge";
 import { type CallerLine, multiCallerLineFor } from "@/lib/game/caller";
 import { MAX_VISIT } from "@/lib/game/engine";
 import { subjectCrestUrl } from "@/lib/subjects";
 import { resolveGuess } from "@/lib/tm/actions";
 import type { PlayerSearchItem } from "@/lib/tm/types";
-import { cn } from "@/lib/utils";
 
 /** The shared multiplayer board — local and online providers both drive it. */
 export function MultiGameBoard() {

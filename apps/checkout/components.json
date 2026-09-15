@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "radix-vega",
+  "style": "base-sera",
   "rsc": true,
   "tsx": true,
   "tailwind": {
@@ -14,8 +14,8 @@
   "rtl": false,
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
+    "utils": "@football/ui/lib/utils",
+    "ui": "@football/ui/components",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },

@@ -1,10 +1,10 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { Input } from "@football/ui/components/input";
+import { cn } from "@football/ui/lib/utils";
 import { XIcon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 
 const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 6;

@@ -1,23 +1,23 @@
 "use client";
 
-import { useMutation } from "convex/react";
-import { CheckIcon, CopyIcon } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { SubjectPicker } from "@/components/game/subject-picker";
-import { Button } from "@/components/ui/button";
+import { Button } from "@football/ui/components/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@football/ui/components/dialog";
+import { cn } from "@football/ui/lib/utils";
+import { useMutation } from "convex/react";
+import { CheckIcon, CopyIcon } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { SubjectPicker } from "@/components/game/subject-picker";
 import { MAX_VISIT } from "@/lib/game/engine";
 import type { Subject } from "@/lib/subjects";
 import { subjectCrestUrl } from "@/lib/subjects";
-import { cn } from "@/lib/utils";
 import { api } from "../../../convex/_generated/api";
 import type { Doc } from "../../../convex/_generated/dataModel";
 
@@ -169,10 +169,8 @@ export function Lobby({
           </span>
           {isHost && (
             <Dialog open={boardOpen} onOpenChange={setBoardOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                  {subject ? "Change board" : "Pick the board"}
-                </Button>
+              <DialogTrigger render={<Button variant="outline" size="sm" />}>
+                {subject ? "Change board" : "Pick the board"}
               </DialogTrigger>
               <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-3xl">
                 <DialogHeader>

@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@football/ui/components/button";
+import { Input } from "@football/ui/components/input";
 import { useMutation, useQuery } from "convex/react";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
@@ -7,8 +9,6 @@ import { MultiGameBoard } from "@/components/game/multi/multi-game-board";
 import { Lobby } from "@/components/online/lobby";
 import { OnlineGameProvider } from "@/components/online/online-game-provider";
 import { PENDING_JOIN_KEY } from "@/components/online/online-landing";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useDeviceId } from "@/hooks/use-device-id";
 import type { MultiGameState } from "@/lib/game/engine";
 import type { Subject } from "@/lib/subjects";
@@ -79,8 +79,8 @@ export function Room({ code }: { code: string }) {
           Nothing chalked under <span className="font-mono">{code}</span>. The
           game may have wrapped up and been wiped off.
         </p>
-        <Button asChild variant="outline">
-          <Link href="/online">Back to online play</Link>
+        <Button variant="outline" render={<Link href="/online" />}>
+          Back to online play
         </Button>
       </CenteredNote>
     );
@@ -97,8 +97,8 @@ export function Room({ code }: { code: string }) {
             This one&apos;s already underway — darts are flying. Get a fresh
             code from your mates for the next leg.
           </p>
-          <Button asChild variant="outline">
-            <Link href="/online">Back to online play</Link>
+          <Button variant="outline" render={<Link href="/online" />}>
+            Back to online play
           </Button>
         </CenteredNote>
       );

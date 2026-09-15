@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@football/ui/components/button";
+import { cn } from "@football/ui/lib/utils";
 import type { GameState } from "@/lib/game/engine";
 import type { Subject } from "@/lib/subjects";
-import { cn } from "@/lib/utils";
 
 const CONFETTI_COLORS = [
   "bg-primary",

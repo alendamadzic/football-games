@@ -1,7 +1,7 @@
 "use client";
 
+import { cn } from "@football/ui/lib/utils";
 import { MAX_STRIKES } from "@/lib/game/engine";
-import { cn } from "@/lib/utils";
 
 function DartIcon({ className }: { className?: string }) {
   return (
