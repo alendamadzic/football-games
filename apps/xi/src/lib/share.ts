@@ -1,5 +1,5 @@
-import type { Match } from "./types";
 import { formatTime } from "./format";
+import type { Match } from "./types";
 
 export interface ShareData {
   match: Match;

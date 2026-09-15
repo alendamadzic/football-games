@@ -20,11 +20,7 @@ export default function OnlineRoomPage({
   );
 }
 
-async function RoomContent({
-  params,
-}: {
-  params: Promise<{ code: string }>;
-}) {
+async function RoomContent({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
   const configured = !!process.env.NEXT_PUBLIC_CONVEX_URL;
   return configured ? (

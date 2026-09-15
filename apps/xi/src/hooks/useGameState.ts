@@ -210,12 +210,12 @@ export function useGameState(match: Match, persistKey?: string): GameApi {
 
   const allPlayers = useMemo(() => {
     const list: { key: string; player: Player }[] = [];
-    match.homePlayers.forEach((p, i) =>
-      list.push({ key: playerKey("home", i), player: p }),
-    );
-    match.awayPlayers.forEach((p, i) =>
-      list.push({ key: playerKey("away", i), player: p }),
-    );
+    match.homePlayers.forEach((p, i) => {
+      list.push({ key: playerKey("home", i), player: p });
+    });
+    match.awayPlayers.forEach((p, i) => {
+      list.push({ key: playerKey("away", i), player: p });
+    });
     return list;
   }, [match]);
 

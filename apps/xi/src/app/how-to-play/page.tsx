@@ -5,8 +5,14 @@ export const metadata = {
 };
 
 const rules = [
-  ["⚽", "Type a player's name to guess — first name, surname, or both. Small typos are forgiven."],
-  ["🔢", "Each slot shows the squad number, position, and nationality flag as hints."],
+  [
+    "⚽",
+    "Type a player's name to guess — first name, surname, or both. Small typos are forgiven.",
+  ],
+  [
+    "🔢",
+    "Each slot shows the squad number, position, and nationality flag as hints.",
+  ],
   ["❤️", "You have 3 lives — a wrong guess costs one."],
   ["🏆", "Get all 22 right to win."],
 ] as const;

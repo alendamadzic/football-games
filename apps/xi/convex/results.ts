@@ -1,5 +1,5 @@
-import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 
 // Upsert a user's result for a given date (one game per UTC day).
 export const saveResult = mutation({
@@ -34,9 +34,7 @@ export const getResultForDate = query({
   handler: async ({ db }, { userId, date }) => {
     return await db
       .query("userResults")
-      .withIndex("by_user_date", (q) =>
-        q.eq("userId", userId).eq("date", date),
-      )
+      .withIndex("by_user_date", (q) => q.eq("userId", userId).eq("date", date))
       .unique();
   },
 });

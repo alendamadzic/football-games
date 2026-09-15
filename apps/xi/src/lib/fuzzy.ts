@@ -27,11 +27,7 @@ export function levenshtein(a: string, b: string): number {
 // Strip accents/diacritics and lowercase so "Schmeichel" === "schmeichel" and
 // "Mbappé" matches "mbappe".
 export function normalize(s: string): string {
-  return s
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .trim();
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 }
 
 // Allowed typo tolerance scales with word length so short names aren't
@@ -67,7 +63,12 @@ export function nameMatches(
 
   if (g === s || g === n || g === full) return true;
   if (levenshtein(g, s) <= allowedDistance(s.length)) return true;
-  if (n.length >= 3 && g.length >= 3 && levenshtein(g, n) <= allowedDistance(n.length)) return true;
+  if (
+    n.length >= 3 &&
+    g.length >= 3 &&
+    levenshtein(g, n) <= allowedDistance(n.length)
+  )
+    return true;
 
   return false;
 }

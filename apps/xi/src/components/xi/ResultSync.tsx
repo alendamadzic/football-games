@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
-import { getUserId } from "@/lib/user-id";
+import { useEffect, useRef } from "react";
 import { todayUTC } from "@/lib/format";
+import { getUserId } from "@/lib/user-id";
+import { api } from "../../../convex/_generated/api";
 
 export function ResultSync({
   matchSlug,

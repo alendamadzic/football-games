@@ -9,12 +9,15 @@
     "ignoreUnknown": true,
     "includes": [
       "**",
-      "!node_modules",
-      "!.next",
-      "!dist",
-      "!build",
+      "!**/node_modules",
+      "!**/.next",
+      "!**/.turbo",
+      "!**/dist",
+      "!**/build",
+      "!**/convex/_generated",
       "!.agents",
-      "!convex/_generated"
+      "!.claude/skills",
+      "!apps/transfermarkt-api"
     ]
   },
   "formatter": {
@@ -44,7 +47,10 @@
   },
   "overrides": [
     {
-      "includes": ["src/components/ui/**"],
+      "includes": [
+        "packages/ui/src/components/**",
+        "apps/*/src/components/ui/**"
+      ],
       "linter": {
         "rules": {
           "a11y": {

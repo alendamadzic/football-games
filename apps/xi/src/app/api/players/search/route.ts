@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const BASE = process.env.NEXT_PUBLIC_TRANSFERMARKT_API_URL;
 

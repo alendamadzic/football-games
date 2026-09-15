@@ -78,7 +78,8 @@ export const MATCHES: Match[] = [
     competition: "UEFA Champions League Final",
     date: "25 May 2005",
     score: "3–3 (pens)",
-    scorers: "Gerrard 54', Šmicer 56', Alonso 60' / Maldini 1', Crespo 39', 44'",
+    scorers:
+      "Gerrard 54', Šmicer 56', Alonso 60' / Maldini 1', Crespo 39', 44'",
     homePlayers: [
       p("Jerzy Dudek", "Dudek", "GK", 1, "Polish"),
       p("Steve Finnan", "Finnan", "DEF", 3, "Irish"),
@@ -114,7 +115,8 @@ export const MATCHES: Match[] = [
     competition: "FIFA World Cup Semi-Final",
     date: "8 July 2014",
     score: "1–7",
-    scorers: "Oscar 90' / Müller 11', Klose 23', Kroos 24', 26', Khedira 29', Schürrle 69', 79'",
+    scorers:
+      "Oscar 90' / Müller 11', Klose 23', Kroos 24', 26', Khedira 29', Schürrle 69', 79'",
     homePlayers: [
       p("Júlio César", "César", "GK", 12, "Brazilian"),
       p("Maicon", "Maicon", "DEF", 23, "Brazilian"),
@@ -186,7 +188,8 @@ export const MATCHES: Match[] = [
     competition: "FIFA World Cup Final",
     date: "15 July 2018",
     score: "4–2",
-    scorers: "Mandžukić 18' OG, Griezmann 38' pen, Pogba 59', Mbappé 65' / Perišić 28', Mandžukić 69'",
+    scorers:
+      "Mandžukić 18' OG, Griezmann 38' pen, Pogba 59', Mbappé 65' / Perišić 28', Mandžukić 69'",
     homePlayers: [
       p("Hugo Lloris", "Lloris", "GK", 1, "French"),
       p("Benjamin Pavard", "Pavard", "DEF", 2, "French"),
@@ -258,7 +261,8 @@ export const MATCHES: Match[] = [
     competition: "UEFA Champions League Final",
     date: "24 May 2014",
     score: "4–1",
-    scorers: "Ramos 90+3', Bale 110', Marcelo 118', Ronaldo 120' pen / Godín 36'",
+    scorers:
+      "Ramos 90+3', Bale 110', Marcelo 118', Ronaldo 120' pen / Godín 36'",
     homePlayers: [
       p("Iker Casillas", "Casillas", "GK", 1, "Spanish"),
       p("Daniel Carvajal", "Carvajal", "DEF", 15, "Spanish"),
@@ -690,7 +694,8 @@ export const MATCHES: Match[] = [
     competition: "Premier League",
     date: "1 February 2005",
     score: "4–2",
-    scorers: "Giggs 21', Ronaldo 54', 58', O'Shea 90' / Vieira 8', Bergkamp 18'",
+    scorers:
+      "Giggs 21', Ronaldo 54', 58', O'Shea 90' / Vieira 8', Bergkamp 18'",
     homePlayers: [
       p("Roy Carroll", "Carroll", "GK", 1, "Northern Irish"),
       p("Gary Neville", "Neville", "DEF", 2, "English"),
@@ -942,7 +947,8 @@ export const MATCHES: Match[] = [
     competition: "FIFA World Cup Final",
     date: "18 December 2022",
     score: "3–3 (pens)",
-    scorers: "Messi 23' pen, 108', Di María 36' / Mbappé 80' pen, 81', 118' pen",
+    scorers:
+      "Messi 23' pen, 108', Di María 36' / Mbappé 80' pen, 81', 118' pen",
     homePlayers: [
       p("Emiliano Martínez", "Martínez", "GK", 23, "Argentine"),
       p("Nahuel Molina", "Molina", "DEF", 26, "Argentine"),
@@ -1230,7 +1236,8 @@ export const MATCHES: Match[] = [
     competition: "UEFA Champions League Round of 16",
     date: "8 March 2017",
     score: "6–1",
-    scorers: "Suárez 3', Kurzawa 40' OG, Messi 50' pen, Neymar 88', 90+1' pen, Sergi Roberto 90+5' / Cavani 62'",
+    scorers:
+      "Suárez 3', Kurzawa 40' OG, Messi 50' pen, Neymar 88', 90+1' pen, Sergi Roberto 90+5' / Cavani 62'",
     homePlayers: [
       p("Marc-André ter Stegen", "ter Stegen", "GK", 1, "German"),
       p("Sergi Roberto", "Sergi Roberto", "DEF", 20, "Spanish"),

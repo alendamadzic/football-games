@@ -119,11 +119,22 @@
 }
 
 @keyframes xi-shake {
-  0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-5px); }
-  40% { transform: translateX(5px); }
-  60% { transform: translateX(-3px); }
-  80% { transform: translateX(3px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
 }
 
 .animate-shake {
@@ -132,9 +143,18 @@
 
 /* Sticker "slap" — lands slightly rotated, like a real sticker pressed in. */
 @keyframes xi-slap {
-  0% { transform: scale(1.45) rotate(var(--slap-rot, -6deg)); opacity: 0; }
-  60% { transform: scale(0.94) rotate(calc(var(--slap-rot, -6deg) * 0.3)); opacity: 1; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0% {
+    transform: scale(1.45) rotate(var(--slap-rot, -6deg));
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.94) rotate(calc(var(--slap-rot, -6deg) * 0.3));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 .animate-slap {
   animation: xi-slap 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.4) both;
@@ -142,8 +162,12 @@
 
 /* Holographic shine sweep across foil/empty sticker slots. */
 @keyframes xi-shine {
-  0% { transform: translateX(-120%) skewX(-20deg); }
-  100% { transform: translateX(220%) skewX(-20deg); }
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-20deg);
+  }
 }
 .animate-shine {
   animation: xi-shine 3.5s ease-in-out infinite;
@@ -151,9 +175,15 @@
 
 /* HUD counter pulse when the score changes. */
 @keyframes xi-pop {
-  0% { transform: scale(1); }
-  45% { transform: scale(1.18); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 .animate-pop {
   animation: xi-pop 0.26s ease-out;
@@ -161,8 +191,14 @@
 
 /* Reveal card rising out of the guess dock. */
 @keyframes xi-rise {
-  0% { transform: translateY(0.75rem); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+  0% {
+    transform: translateY(0.75rem);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 .animate-rise {
   animation: xi-rise 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.1) both;
@@ -188,7 +224,8 @@
   body {
     @apply bg-background text-foreground;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
   }
   html {
