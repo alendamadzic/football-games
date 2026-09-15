@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  transpilePackages: ["@football/transfermarkt"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "tmssl.akamaized.net" },

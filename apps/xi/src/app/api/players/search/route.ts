@@ -1,7 +1,5 @@
+import { searchPlayers } from "@football/transfermarkt";
 import { type NextRequest, NextResponse } from "next/server";
-
-const BASE =
-  process.env.TM_API_URL ?? "https://transfermarkt-api-xi.vercel.app";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("q");
@@ -9,12 +7,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ results: [] });
   }
   try {
-    const res = await fetch(
-      `${BASE}/players/search/${encodeURIComponent(query)}`,
-      { next: { revalidate: 3600 } },
-    );
-    if (!res.ok) return NextResponse.json({ results: [] });
-    const data = await res.json();
+    const data = await searchPlayers(query, {
+      init: { next: { revalidate: 3600 } },
+    });
     return NextResponse.json(data);
   } catch {
     return NextResponse.json({ results: [] });

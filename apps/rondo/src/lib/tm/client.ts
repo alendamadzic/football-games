@@ -1,25 +1,16 @@
+import {
+  clubBadgeUrl,
+  getJerseyNumbers as tmGetJerseyNumbers,
+  getPlayerProfile as tmGetPlayerProfile,
+  getPlayerTransfers as tmGetPlayerTransfers,
+  searchClubs as tmSearchClubs,
+  searchPlayers as tmSearchPlayers,
+} from "@football/transfermarkt";
 import { cacheLife, cacheTag } from "next/cache";
 import { normalizeClubName } from "./normalize";
-import type {
-  CareerClub,
-  ClubResult,
-  PlayerResult,
-  TmClubSearchResponse,
-  TmJerseyNumbersResponse,
-  TmPlayerProfile,
-  TmPlayerSearchResponse,
-  TmTransfersResponse,
-} from "./types";
-
-const BASE =
-  process.env.TM_API_URL ?? "https://transfermarkt-api-xi.vercel.app";
+import type { CareerClub, ClubResult, PlayerResult } from "./types";
 
 export { normalizeClubName };
-
-/** Constructs a Transfermarkt CDN badge URL for a club. */
-function clubBadgeUrl(clubId: string): string {
-  return `https://tmssl.akamaized.net/images/wappen/normquad/${clubId}.png`;
-}
 
 // Matches youth, reserve, B-team, and other non-senior suffixes/patterns.
 const NON_SENIOR_PATTERN =
@@ -33,26 +24,13 @@ function isNonSeniorClub(name: string): boolean {
   return NON_SENIOR_PATTERN.test(name) || WOMENS_PATTERN.test(name);
 }
 
-async function tmFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(8000),
-  });
-  if (!res.ok) {
-    throw new Error(`Transfermarkt API request failed: ${res.status}`);
-  }
-  return (await res.json()) as T;
-}
-
 /** Autocomplete: search clubs by (partial) name. Cached for a day. */
 export async function searchTeams(query: string): Promise<ClubResult[]> {
   "use cache";
   cacheLife("days");
   cacheTag("tm-teams", `tm-teams-${query.toLowerCase()}`);
 
-  const data = await tmFetch<TmClubSearchResponse>(
-    `/clubs/search/${encodeURIComponent(query)}`,
-  );
+  const data = await tmSearchClubs(query);
   return (data.results ?? [])
     .filter((t) => !isNonSeniorClub(t.name))
     .map((t) => ({
@@ -70,9 +48,7 @@ export async function searchPlayers(query: string): Promise<PlayerResult[]> {
   cacheLife("days");
   cacheTag("tm-players", `tm-players-${query.toLowerCase()}`);
 
-  const data = await tmFetch<TmPlayerSearchResponse>(
-    `/players/search/${encodeURIComponent(query)}`,
-  );
+  const data = await tmSearchPlayers(query);
   return (data.results ?? []).map((p) => ({
     id: p.id,
     name: p.name,
@@ -105,9 +81,7 @@ export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
 
   // Full transfer history — both legs of each transfer.
   try {
-    const transfers = await tmFetch<TmTransfersResponse>(
-      `/players/${encodeURIComponent(playerId)}/transfers`,
-    );
+    const transfers = await tmGetPlayerTransfers(playerId);
     for (const t of transfers.transfers ?? []) {
       addClub(t.clubFrom?.id, t.clubFrom?.name);
       addClub(t.clubTo?.id, t.clubTo?.name);
@@ -118,9 +92,7 @@ export async function getPlayerClubs(playerId: string): Promise<CareerClub[]> {
 
   // Current club — catches one-club players with no transfer history.
   try {
-    const profile = await tmFetch<TmPlayerProfile>(
-      `/players/${encodeURIComponent(playerId)}/profile`,
-    );
+    const profile = await tmGetPlayerProfile(playerId);
     addClub(profile.club?.id, profile.club?.name);
   } catch {
     // Ignore.
@@ -141,9 +113,7 @@ export async function getJerseyNumber(
   cacheLife("weeks");
   cacheTag("tm-jersey", `tm-jersey-${playerId}`);
 
-  const data = await tmFetch<TmJerseyNumbersResponse>(
-    `/players/${encodeURIComponent(playerId)}/jersey_numbers`,
-  );
+  const data = await tmGetJerseyNumbers(playerId);
 
   // Jersey numbers are returned most-recent-first; take the first match.
   const entry = (data.jerseyNumbers ?? []).find((j) => j.club === clubId);

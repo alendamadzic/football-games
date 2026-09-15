@@ -1,3 +1,9 @@
+export type {
+  TmPlayerProfile as TmProfileResponse,
+  TmPlayerSearchResponse as TmSearchResponse,
+  TmStatsResponse,
+} from "@football/transfermarkt";
+
 export interface PlayerSearchItem {
   playerId: string;
   name: string;
@@ -23,35 +29,3 @@ export type ResolveGuessResult =
       breakdown: CompetitionBreakdown[];
     }
   | { ok: false; error: "lookup_failed" };
-
-/** Raw shapes returned by the transfermarkt-api fork. */
-export interface TmSearchResponse {
-  results?: {
-    id: string;
-    name: string;
-    position?: string;
-    club?: { id?: string; name?: string };
-    age?: number;
-    nationalities?: string[];
-  }[];
-}
-
-export interface TmStatsResponse {
-  id: string;
-  stats?: {
-    competitionId: string;
-    competitionName: string;
-    seasonId: string;
-    clubId: string;
-    appearances?: number;
-    goals?: number;
-    assists?: number;
-    minutesPlayed?: number;
-  }[];
-}
-
-export interface TmProfileResponse {
-  id: string;
-  name?: string;
-  imageUrl?: string;
-}

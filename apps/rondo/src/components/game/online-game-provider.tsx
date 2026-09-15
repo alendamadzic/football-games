@@ -3,8 +3,8 @@
 import { useMutation } from "convex/react";
 import { useCallback, useMemo, useRef } from "react";
 import type { GameAction, GameState } from "@/lib/game/types";
-import { verifyLinkAction } from "@/lib/sportsdb/actions";
-import type { VerifyResult } from "@/lib/sportsdb/types";
+import { verifyLinkAction } from "@/lib/tm/actions";
+import type { VerifyResult } from "@/lib/tm/types";
 import { api } from "../../../convex/_generated/api";
 import type { Doc } from "../../../convex/_generated/dataModel";
 import { GameContext, type GameContextValue } from "./game-provider";

@@ -24,7 +24,7 @@ import {
   RESTRICTED_POSITIONS,
 } from "@/lib/game/difficulty";
 import type { GameState } from "@/lib/game/types";
-import { getStartingClubAction } from "@/lib/sportsdb/actions";
+import { getStartingClubAction } from "@/lib/tm/actions";
 import { api } from "../../../convex/_generated/api";
 import type { Doc } from "../../../convex/_generated/dataModel";
 

@@ -12,11 +12,8 @@ import {
 } from "react";
 import { gameReducer } from "@/lib/game/reducer";
 import type { GameAction, GameConfig, GameState, Mode } from "@/lib/game/types";
-import {
-  getStartingClubAction,
-  verifyLinkAction,
-} from "@/lib/sportsdb/actions";
-import type { VerifyResult } from "@/lib/sportsdb/types";
+import { getStartingClubAction, verifyLinkAction } from "@/lib/tm/actions";
+import type { VerifyResult } from "@/lib/tm/types";
 
 function emptyState(mode: Mode): GameState {
   return {

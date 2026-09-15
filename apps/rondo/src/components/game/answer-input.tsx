@@ -15,9 +15,9 @@ import { useDebouncedValue } from "@/hooks/use-debounce";
 import { normalizePosition, resolveNationality } from "@/lib/game/difficulty";
 import { referenceClub, referencePlayer } from "@/lib/game/reducer";
 import type { ChainLink } from "@/lib/game/types";
-import { searchClubsAction, searchPlayersAction } from "@/lib/sportsdb/actions";
-import { normalizeClubName } from "@/lib/sportsdb/normalize";
-import type { ClubResult, PlayerResult } from "@/lib/sportsdb/types";
+import { searchClubsAction, searchPlayersAction } from "@/lib/tm/actions";
+import { normalizeClubName } from "@/lib/tm/normalize";
+import type { ClubResult, PlayerResult } from "@/lib/tm/types";
 import { useGame } from "./game-provider";
 
 type Suggestion = ClubResult | PlayerResult;

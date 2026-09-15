@@ -13,6 +13,7 @@
       "name": "checkout",
       "version": "0.1.0",
       "dependencies": {
+        "@football/transfermarkt": "workspace:*",
         "class-variance-authority": "catalog:",
         "clsx": "catalog:",
         "cmdk": "catalog:",
@@ -43,6 +44,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@base-ui/react": "catalog:",
+        "@football/transfermarkt": "workspace:*",
         "class-variance-authority": "catalog:",
         "clsx": "catalog:",
         "cmdk": "catalog:",
@@ -77,6 +79,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@base-ui/react": "catalog:",
+        "@football/transfermarkt": "workspace:*",
         "class-variance-authority": "catalog:",
         "clsx": "catalog:",
         "cmdk": "catalog:",
@@ -99,6 +102,15 @@
         "@types/react-dom": "catalog:",
         "babel-plugin-react-compiler": "catalog:",
         "tailwindcss": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/transfermarkt": {
+      "name": "@football/transfermarkt",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@football/typescript-config": "workspace:*",
+        "@types/node": "catalog:",
         "typescript": "catalog:",
       },
     },
@@ -279,6 +291,8 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.9", "", { "dependencies": { "@floating-ui/dom": "^1.8.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-JDjEFGCpImxDCA7JJKviA0M9+RtmJdj0m/NVU5IMgBK+AmZouAQQ7/+2GLH0GXXY0YMw9oXPB8hKdbPYg5QLYg=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.12", "", {}, "sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww=="],
+
+    "@football/transfermarkt": ["@football/transfermarkt@workspace:packages/transfermarkt"],
 
     "@football/typescript-config": ["@football/typescript-config@workspace:packages/typescript-config"],
 
