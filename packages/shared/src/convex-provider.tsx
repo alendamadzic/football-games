@@ -9,7 +9,8 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
   // Created lazily in render (not at module scope) so the client's internal
   // Math.random()-based session id isn't generated during static prerender.
   // If the URL isn't configured yet (before `bunx convex dev`), skip the
-  // provider so the app still renders.
+  // provider so the rest of the app (solo/local/arcade modes) still works;
+  // only the online routes actually need Convex.
   const [convex] = useState(() =>
     convexUrl ? new ConvexReactClient(convexUrl) : null,
   );

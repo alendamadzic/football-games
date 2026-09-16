@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Anton, Manrope } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
+import { ConvexClientProvider } from "@football/shared/convex-provider";
 import { cn } from "@football/ui/lib/utils";
-import { ConvexClientProvider } from "@/components/providers/convex-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });

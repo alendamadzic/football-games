@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Geist_Mono, Oxanium } from "next/font/google";
 import "./globals.css";
+import { ConvexClientProvider } from "@football/shared/convex-provider";
 import { cn } from "@football/ui/lib/utils";
-import { ConvexClientProvider } from "@/components/convex-provider";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { ThemeScript } from "@/components/theme/theme-script";
 import { Toaster } from "@/components/ui/sonner";

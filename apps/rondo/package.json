@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@base-ui/react": "catalog:",
+    "@football/shared": "workspace:*",
     "@football/transfermarkt": "workspace:*",
     "@football/ui": "workspace:*",
     "class-variance-authority": "catalog:",

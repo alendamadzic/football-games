@@ -14,6 +14,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@base-ui/react": "catalog:",
+        "@football/shared": "workspace:*",
         "@football/transfermarkt": "workspace:*",
         "@football/ui": "workspace:*",
         "class-variance-authority": "catalog:",
@@ -45,6 +46,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@base-ui/react": "catalog:",
+        "@football/shared": "workspace:*",
         "@football/transfermarkt": "workspace:*",
         "@football/ui": "workspace:*",
         "class-variance-authority": "catalog:",
@@ -81,6 +83,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@base-ui/react": "catalog:",
+        "@football/shared": "workspace:*",
         "@football/transfermarkt": "workspace:*",
         "@football/ui": "workspace:*",
         "class-variance-authority": "catalog:",
@@ -105,6 +108,20 @@
         "@types/react-dom": "catalog:",
         "babel-plugin-react-compiler": "catalog:",
         "tailwindcss": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "packages/shared": {
+      "name": "@football/shared",
+      "version": "0.0.0",
+      "dependencies": {
+        "convex": "catalog:",
+        "react": "catalog:",
+      },
+      "devDependencies": {
+        "@football/typescript-config": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
         "typescript": "catalog:",
       },
     },
@@ -322,6 +339,8 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.9", "", { "dependencies": { "@floating-ui/dom": "^1.8.0" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-JDjEFGCpImxDCA7JJKviA0M9+RtmJdj0m/NVU5IMgBK+AmZouAQQ7/+2GLH0GXXY0YMw9oXPB8hKdbPYg5QLYg=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.12", "", {}, "sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww=="],
+
+    "@football/shared": ["@football/shared@workspace:packages/shared"],
 
     "@football/transfermarkt": ["@football/transfermarkt@workspace:packages/transfermarkt"],
 

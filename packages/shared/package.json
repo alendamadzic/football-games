@@ -1,0 +1,21 @@
+{
+  "name": "@football/shared",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    "./*": "./src/*.tsx"
+  },
+  "dependencies": {
+    "convex": "catalog:",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@football/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}
