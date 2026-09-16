@@ -23,7 +23,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { HowToPlayModal } from "@/components/xi/HowToPlayModal";
-import { ResultSync } from "@/components/xi/ResultSync";
+import { ResultSyncLazy } from "@/components/xi/ResultSyncLazy";
 import { ShareCard } from "@/components/xi/ShareCard";
 import { useGameState } from "@/hooks/useGameState";
 import { useIsDesktop, usePrefersReducedMotion } from "@/hooks/useMediaQuery";
@@ -186,7 +186,7 @@ export function AlbumGame({ match }: { match: Match }) {
       </Dialog>
 
       {convexConfigured && (
-        <ResultSync
+        <ResultSyncLazy
           matchSlug={match.slug}
           status={game.status}
           score={game.score}

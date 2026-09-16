@@ -1,4 +1,4 @@
-import { OnlineLanding } from "@/components/online/online-landing";
+import { OnlineLandingLazy } from "@/components/online/online-landing-lazy";
 import { OnlineNotConfigured } from "@/components/online/online-not-configured";
 import { SiteHeader } from "@/components/site-header";
 
@@ -8,7 +8,7 @@ export default function OnlinePage() {
     <>
       <SiteHeader />
       <div className="flex flex-1 flex-col">
-        {configured ? <OnlineLanding /> : <OnlineNotConfigured />}
+        {configured ? <OnlineLandingLazy /> : <OnlineNotConfigured />}
       </div>
     </>
   );
