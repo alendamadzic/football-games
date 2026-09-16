@@ -12,7 +12,6 @@ import type * as data_matches from "../data/matches.js";
 import type * as matches from "../matches.js";
 import type * as results from "../results.js";
 import type * as seed from "../seed.js";
-import type * as stats from "../stats.js";
 
 import type {
   ApiFromModules,
@@ -25,7 +24,6 @@ declare const fullApi: ApiFromModules<{
   matches: typeof matches;
   results: typeof results;
   seed: typeof seed;
-  stats: typeof stats;
 }>;
 
 /**
